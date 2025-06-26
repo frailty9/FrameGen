@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.framegen</groupId>
+    <artifactId>framegen</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>FrameGen Code Generator</name>
+    <description>A code generator tool</description>
+    <url>https://gitee.com/frailty/frame-gen</url>
+
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>Frailty</id>
+            <name>花殇</name>
+            <email>ydl9263@qq.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://gitee.com/frailty/frame-gen.git</connection>
+        <developerConnection>scm:git:git@gitee.com:frailty/frame-gen.git</developerConnection>
+        <url>https://gitee.com/frailty/frame-gen</url>
+    </scm>
+
+    <modules>
+        <module>framegen-core</module>
+        <module>framegen-gui</module>
+        <module>framegen-solon-plugin</module>
+        <module>framegen-spring-boot3-starter</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Solon 依赖 -->
+            <dependency>
+                <groupId>org.noear</groupId>
+                <artifactId>solon-parent</artifactId>
+                <version>2.9.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+</project>
