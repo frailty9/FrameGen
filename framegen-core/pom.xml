@@ -18,7 +18,11 @@
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>6.3.0</version>
+        </dependency>
     </dependencies>
 
 </project>
