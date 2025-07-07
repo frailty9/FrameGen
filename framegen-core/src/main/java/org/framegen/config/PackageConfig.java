@@ -1,0 +1,62 @@
+package org.framegen.config;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+/**
+ * 生成器输出包配置类
+ */
+@Data
+@AllArgsConstructor
+public class PackageConfig {
+
+    // 公共前缀包名
+    private String origin;
+    // 模型包名
+    private String model;
+    // Mapper包名
+    private String mapper;
+    // 服务层包名
+    private String service;
+    // 控制层包名
+    private String controller;
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String origin;
+        private String model;
+        private String mapper;
+        private String service;
+        private String controller;
+
+        public Builder origin(String origin) {
+            this.origin = origin;
+            return this;
+        }
+        public Builder model(String model) {
+            this.model = model;
+            return this;
+        }
+        public Builder mapper(String mapper) {
+            this.mapper = mapper;
+            return this;
+        }
+        public Builder service(String service) {
+            this.service = service;
+            return this;
+        }
+        public Builder controller(String controller) {
+            this.controller = controller;
+            return this;
+        }
+        public PackageConfig build() {
+            if (null == model) {
+                model = "model";
+            }
+            return new PackageConfig(origin, model, mapper, service, controller);
+        }
+    }
+}
