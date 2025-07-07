@@ -4,7 +4,10 @@ public class MySqlProvider extends AbstractSqlProvider {
 
     @Override
     public String getTableNamesSql() {
-        return "SHOW TABLES;";
+        return "SELECT TABLE_NAME table_name, TABLE_SCHEMA table_schema, " +
+                "TABLE_COMMENT table_comment\n" +
+                "FROM information_schema.TABLES\n" +
+                "WHERE TABLE_SCHEMA = (SELECT DATABASE());";
     }
 
     @Override
