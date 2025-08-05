@@ -44,24 +44,29 @@ public class ModelGenerator {
         List<String> imports = new ArrayList<>();
         table.getColumns().forEach(column -> {
             String codeType = column.getDataType();
+            switch (codeType) {
+                case "BigDecimal":
+                    imports.add("java.math.BigDecimal");
+                    break;
+                case "LocalDate":
+                    imports.add("java.time.LocalDate");
+                    break;
+                case "LocalTime":
+                    imports.add("java.time.LocalTime");
+                    break;
+                case "LocalDateTime":
+                    imports.add("java.time.LocalDateTime");
+                    break;
+                default:
+                    break;
+            }
             if (GlobalConfigHolder.enableKotlin) {
+                switch (codeType) {
 
+                }
             } else {
                 switch (codeType) {
-                    case "BigDecimal":
-                        imports.add("java.math.BigDecimal");
-                        break;
-                    case "LocalDate":
-                        imports.add("java.time.LocalDate");
-                        break;
-                    case "LocalTime":
-                        imports.add("java.time.LocalTime");
-                        break;
-                    case "LocalDateTime":
-                        imports.add("java.time.LocalDateTime");
-                        break;
-                    default:
-                        break;
+
                 }
             }
         });
@@ -109,10 +114,10 @@ public class ModelGenerator {
 
         GeneratorProps.Builder<Collection<Column>> builder = GeneratorProps.builder();
         builder.packagePath(modelPackage)
-                .imports(getImports())
-                .annotations(getAnnotations())
+               .imports(getImports())
+               .annotations(getAnnotations())
                .classComment(tableComment)
-                .className(className)
+               .className(className)
                .data(table.getColumns());
 
         return builder.build();

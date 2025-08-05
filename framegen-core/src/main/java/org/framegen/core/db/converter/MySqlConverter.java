@@ -17,9 +17,35 @@ public class MySqlConverter implements AbstractTypeConverter {
 
         if (GlobalConfigHolder.enableKotlin) {
             switch (lowerType) {
-
+                case "varchar":
+                case "char":
+                case "text":
+                case "longtext":
+                case "mediumtext":
+                    return "String";
+                case "int":
+                case "integer":
+                    return "Int";
+                case "bigint":
+                    return "Long";
+                case "decimal":
+                case "numeric":
+                    return "BigDecimal";
+                case "date":
+                    return "LocalDate";
+                case "datetime":
+                case "timestamp":
+                    return "LocalDateTime";
+                case "boolean":
+                case "tinyint":
+                    return "Boolean";
+                case "float":
+                    return "Float";
+                case "double":
+                    return "Double";
+                default:
+                    return "Any";
             }
-            return "TODO";
         } else {
             switch (lowerType) {
                 case "varchar":
