@@ -80,7 +80,7 @@ public class Query implements AutoCloseable {
     public void execute(Consumer<ResultSet> consumer) throws SQLException {
         try (PreparedStatement pstatement = buildPreparedStatement();
              ResultSet resultSet = pstatement.executeQuery()) {
-            log.debug("FramGen: 执行SQL语句: {}, 参数: {}", sql, params);
+            log.debug("FramGen: 执行SQL语句 => {} \n <= SQL END, 参数: {}", sql, params);
             while (resultSet.next()) {
                 consumer.accept(resultSet);
             }
