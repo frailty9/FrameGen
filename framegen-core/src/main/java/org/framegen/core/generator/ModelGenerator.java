@@ -7,7 +7,8 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
-import org.framegen.core.generator.props.ModelProps;
+import org.framegen.core.generator.props.GeneratorProps;
+import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
 
@@ -94,7 +95,7 @@ public class ModelGenerator {
         }
     }
 
-    private ModelProps getData() {
+    private GeneratorProps<Collection<Column>> getData() {
         String modelPackage = getPackagePath();
 
         String tableComment;
@@ -106,14 +107,15 @@ public class ModelGenerator {
 
         String className = StrUtil.toPascalCase(table.getTableName());
 
-        return ModelProps.builder()
-                .packagePath(modelPackage)
+        GeneratorProps.Builder<Collection<Column>> builder = GeneratorProps.builder();
+        builder.packagePath(modelPackage)
                 .imports(getImports())
-                .tableComment(tableComment)
                 .annotations(getAnnotations())
+               .classComment(tableComment)
                 .className(className)
-                .columns(table.getColumns())
-                .build();
+               .data(table.getColumns());
+
+        return builder.build();
     }
 
     protected void write(Object data, File outFile) throws TemplateException, IOException {

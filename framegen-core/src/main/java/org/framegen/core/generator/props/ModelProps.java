@@ -6,6 +6,7 @@ import org.framegen.core.model.Column;
 
 import java.util.Collection;
 
+@Deprecated
 @Data
 @Builder
 public class ModelProps {

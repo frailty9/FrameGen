@@ -5,13 +5,13 @@ import ${import};
 </#list>
 
 /**
- * ${tableComment}
+ * ${classComment}
  */
 <#list annotations as annotation>
 @${annotation}
 </#list>
 public class ${className} {
-    <#list columns as column>
+    <#list data as column>
         /**
         <#if column.columnComment?has_content>
         * ${column.columnComment}
