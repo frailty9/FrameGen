@@ -3,6 +3,7 @@ package org.framegen.core;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
+import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.db.converter.AbstractTypeConverter;
 import org.framegen.core.db.converter.ConverterFactory;
 import org.framegen.core.db.DataSourceHolder;
@@ -10,6 +11,8 @@ import org.framegen.core.db.Query;
 import org.framegen.core.db.impl.HikariDataSourceGetter;
 import org.framegen.config.JdbcConfig;
 import org.framegen.core.file.FileUtil;
+import org.framegen.core.generator.MapperGenerator;
+import org.framegen.core.generator.MapperXmlGenerator;
 import org.framegen.core.generator.ModelGenerator;
 import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
@@ -110,13 +113,21 @@ public class FrameGenEntry {
     }
 
     public <T> void run(Class<T> clazz) {
-
         // 此处添加一些默认包名
-        if(null == packageConfig.getModel()) {
+        if (null == packageConfig.getModel()) {
             packageConfig.setModel("model");
         }
-        if(null == packageConfig.getMapper() && (enableMybatis || enableMybatisPlus)) {
-            packageConfig.setModel("mapper");
+        if (null == packageConfig.getMapper() && (enableMybatis || enableMybatisPlus)) {
+            packageConfig.setMapper("mapper");
+        }
+
+        // 设置全局持久层框架
+        if (enableMybatisPlus) {
+            GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.MYBATIS_PLUS;
+        } else if (enableMybatis) {
+            GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.MYBATIS;
+        } else {
+            GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
         }
 
         Path outRootPath = null;
@@ -163,11 +174,19 @@ public class FrameGenEntry {
                 // 生成Model
                 ModelGenerator modelGenerator = new ModelGenerator(packageConfig, codePath, table);
                 modelGenerator.generate();
-                // 生成Mapper
-                if ((this.enableMybatis || this.enableMybatisPlus) && null != packageConfig.getMapper()) {
-//                    MapperGenerator mapperGenerator = new MapperGenerator(packageConfig);
-//                    mapperGenerator.generate(packageConfig, codePath);
+
+                // 生成数据层
+                if (null != packageConfig.getMapper()) {
+                    MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, codePath, table);
+                    mapperGenerator.generate();
+
+                    // 生成Mybatis映射文件
+                    if (this.enableMybatis || this.enableMybatisPlus) {
+                        MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig, resourcePath, table);
+                        mapperXmlGenerator.generate();
                 }
+                }
+
             }
         } catch (Exception e) {
             log.error("FrameGen: 生成失败", e);
