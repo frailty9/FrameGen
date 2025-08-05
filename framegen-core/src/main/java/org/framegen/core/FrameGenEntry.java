@@ -110,6 +110,15 @@ public class FrameGenEntry {
     }
 
     public <T> void run(Class<T> clazz) {
+
+        // 此处添加一些默认包名
+        if(null == packageConfig.getModel()) {
+            packageConfig.setModel("model");
+        }
+        if(null == packageConfig.getMapper() && (enableMybatis || enableMybatisPlus)) {
+            packageConfig.setModel("mapper");
+        }
+
         Path outRootPath = null;
         try {
             if (null == this.outModuleName || this.outModuleName.isEmpty()) {

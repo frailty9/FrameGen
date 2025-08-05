@@ -14,7 +14,7 @@ public class PackageConfig {
     private String origin;
     // 模型包名
     private String model;
-    // Mapper包名
+    // 数据层包名
     private String mapper;
     // 服务层包名
     private String service;
@@ -53,9 +53,6 @@ public class PackageConfig {
             return this;
         }
         public PackageConfig build() {
-            if (null == model) {
-                model = "model";
-            }
             return new PackageConfig(origin, model, mapper, service, controller);
         }
     }
