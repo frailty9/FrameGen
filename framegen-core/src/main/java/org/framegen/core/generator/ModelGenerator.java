@@ -87,9 +87,8 @@ public class ModelGenerator {
         return annotations;
     }
 
-    private String getClassName() {
-        return StrUtil.toPascalCase(table.getTableName()) +
-                (GlobalConfigHolder.enableKotlin ? ".kt" : ".java");
+    private String getFileName() {
+        return StrUtil.toPascalCase(table.getTableName());
     }
 
     protected String getPackagePath() {
@@ -101,8 +100,6 @@ public class ModelGenerator {
     }
 
     private GeneratorProps<Collection<Column>> getData() {
-        String modelPackage = getPackagePath();
-
         String tableComment;
         if (null != table.getTableComment() && !table.getTableComment().isEmpty()) {
             tableComment = table.getTableComment();
@@ -113,7 +110,7 @@ public class ModelGenerator {
         String className = StrUtil.toPascalCase(table.getTableName());
 
         GeneratorProps.Builder<Collection<Column>> builder = GeneratorProps.builder();
-        builder.packagePath(modelPackage)
+        builder.packagePath(getPackagePath())
                .imports(getImports())
                .annotations(getAnnotations())
                .classComment(tableComment)
@@ -137,7 +134,8 @@ public class ModelGenerator {
         // 创建输出目录
         if (!modelDirPath.toFile().exists()) modelDirPath.toFile().mkdirs();
         // 输出的文件路径
-        Path modelFilePath = modelDirPath.resolve(getClassName());
+        Path modelFilePath = modelDirPath.resolve(getFileName() +
+                (GlobalConfigHolder.enableKotlin ? ".kt" : ".java"));
 
         this.write(getData(), modelFilePath.toFile());
     }
