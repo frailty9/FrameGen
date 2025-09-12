@@ -14,10 +14,10 @@ import java.util.List;
 
 @Slf4j
 public class FrameGenExecutor {
-    private final PackageConfig packageConfig;
+    protected final PackageConfig packageConfig;
     private final boolean enableMybatis;
     private final boolean enableMybatisPlus;
-    private final Path outRootPath;
+    protected final Path outRootPath;
     private final Path codePath;
     private final Path resourcePath;
 
