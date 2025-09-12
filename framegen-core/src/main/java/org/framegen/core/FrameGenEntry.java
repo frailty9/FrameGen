@@ -11,9 +11,7 @@ import org.framegen.core.db.Query;
 import org.framegen.core.db.impl.HikariDataSourceGetter;
 import org.framegen.config.JdbcConfig;
 import org.framegen.core.file.FileUtil;
-import org.framegen.core.generator.MapperGenerator;
-import org.framegen.core.generator.MapperXmlGenerator;
-import org.framegen.core.generator.ModelGenerator;
+import org.framegen.core.generator.*;
 import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
 
@@ -120,6 +118,12 @@ public class FrameGenEntry {
         if (null == packageConfig.getMapper() && (enableMybatis || enableMybatisPlus)) {
             packageConfig.setMapper("mapper");
         }
+        if (null == packageConfig.getService() && enableMybatisPlus) {
+            packageConfig.setService("service");
+        }
+        if (null == packageConfig.getServiceImpl() && enableMybatisPlus) {
+            packageConfig.setServiceImpl("service.impl");
+        }
 
         // 设置全局持久层框架
         if (enableMybatisPlus) {
@@ -143,7 +147,8 @@ public class FrameGenEntry {
             // 输出路径异常，将默认输出到项目根目录的src/main下
             outRootPath = Paths.get(System.getProperty("user.dir"));
         } finally {
-            if (null == outRootPath) throw new NullPointerException();
+            if (null == outRootPath)
+                throw new NullPointerException();
             outRootPath = outRootPath.resolve("src").resolve("main");
 
             log.debug("FrameGen: outRootPath: {}", outRootPath);
@@ -165,6 +170,7 @@ public class FrameGenEntry {
                             && !this.excludes.contains(table.getTableName()))
                     .collect(Collectors.toList());
 
+            // TODO: 此处循环可以优化, 减少循环内判断
             for (Table table : tables) {
                 log.info("FrameGen: 正在生成表: {}", table.getTableName());
                 List<Column> columns = query.getTableColumns(table.getTableName());
@@ -184,7 +190,19 @@ public class FrameGenEntry {
                     if (this.enableMybatis || this.enableMybatisPlus) {
                         MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig, resourcePath, table);
                         mapperXmlGenerator.generate();
+                    }
                 }
+
+                // 生成服务层
+                if (null != packageConfig.getService()) {
+                    ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, codePath, table);
+                    serviceGenerator.generate();
+
+                    // 生成服务实现类
+                    if (null != packageConfig.getServiceImpl()) {
+                        ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig, codePath, table);
+                        serviceImplGenerator.generate();
+                    }
                 }
 
             }
