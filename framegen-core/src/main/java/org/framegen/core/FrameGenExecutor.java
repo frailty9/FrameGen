@@ -1,13 +1,14 @@
 package org.framegen.core;
 
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
-import org.framegen.core.db.Query;
 import org.framegen.core.generator.*;
 import org.framegen.core.model.Table;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -32,7 +33,6 @@ public class FrameGenExecutor {
 
     public void execute(List<Table> tables) {
         try {
-
             // 设置全局持久层框架
             if (enableMybatisPlus) {
                 GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.MYBATIS_PLUS;
@@ -49,30 +49,21 @@ public class FrameGenExecutor {
                 log.info("FrameGen: 正在生成表: {}", table.getTableName());
 
                 // 生成Model
-                ModelGenerator modelGenerator = new ModelGenerator(packageConfig, codePath, table);
-                modelGenerator.generate();
-
+                createModel(table);
                 // 生成数据层
                 if (null != packageConfig.getMapper()) {
-                    MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, codePath, table);
-                    mapperGenerator.generate();
-
+                    createMapper(table);
                     // 生成Mybatis映射文件
                     if (this.enableMybatis || this.enableMybatisPlus) {
-                        MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig, resourcePath, table);
-                        mapperXmlGenerator.generate();
+                        createMapperXml(table);
                     }
                 }
-
                 // 生成服务层
                 if (null != packageConfig.getService()) {
-                    ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, codePath, table);
-                    serviceGenerator.generate();
-
+                    createService(table);
                     // 生成服务实现类
                     if (null != packageConfig.getServiceImpl()) {
-                        ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig, codePath, table);
-                        serviceImplGenerator.generate();
+                        createServiceImpl(table);
                     }
                 }
             }
@@ -80,5 +71,30 @@ public class FrameGenExecutor {
             log.error("FrameGen: 发生错误: {}", e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    protected void createModel(Table table) throws IOException, TemplateException {
+        ModelGenerator modelGenerator = new ModelGenerator(packageConfig, codePath, table);
+        modelGenerator.generate();
+    }
+
+    protected void createMapper(Table table) throws IOException, TemplateException {
+        MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, codePath, table);
+        mapperGenerator.generate();
+    }
+
+    protected void createMapperXml(Table table) throws IOException, TemplateException {
+        MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig, resourcePath, table);
+        mapperXmlGenerator.generate();
+    }
+
+    protected void createService(Table table) throws IOException, TemplateException {
+        ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, codePath, table);
+        serviceGenerator.generate();
+    }
+
+    protected void createServiceImpl(Table table) throws IOException, TemplateException {
+        ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig, codePath, table);
+        serviceImplGenerator.generate();
     }
 }
