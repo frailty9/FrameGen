@@ -13,10 +13,10 @@ import ${import};
 @${annotation}
 </#list>
 <#if data.frameworkName == "NATIVE_JDBC">
-public class ${className} {
+class ${className} {
 <#elseif data.frameworkName == "MYBATIS">
-public interface ${className} {
+interface ${className} {
 <#elseif data.frameworkName == "MYBATIS_PLUS">
-public interface ${className} extends BaseMapper<${data.modelClassName}> {
+interface ${className} : BaseMapper<${data.modelClassName}> {
 </#if>
 }
