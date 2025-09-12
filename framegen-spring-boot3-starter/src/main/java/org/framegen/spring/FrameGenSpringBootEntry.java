@@ -3,7 +3,6 @@ package org.framegen.spring;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
-import org.framegen.core.FrameGenExecutor;
 import org.framegen.core.db.DataSourceHolder;
 import org.framegen.core.db.Query;
 import org.framegen.core.file.FileUtil;
@@ -23,7 +22,6 @@ import java.util.stream.Stream;
 
 @Slf4j
 public class FrameGenSpringBootEntry {
-    private final ApplicationContext context;
     private Collection<String> includes = new ArrayList<>();
     private Collection<String> excludes = new ArrayList<>();
     private String outModuleName;
@@ -36,7 +34,6 @@ public class FrameGenSpringBootEntry {
     }
 
     public FrameGenSpringBootEntry(ApplicationContext context, String dataSourceName) {
-        this.context = context;
         SpringContextHolder.setContext(context);
         SpringDataSourceGetter.setPreferredDataSourceName(dataSourceName);
         DataSourceHolder.setDataSource(new SpringDataSourceGetter().getDataSource());
@@ -127,7 +124,8 @@ public class FrameGenSpringBootEntry {
             // 过滤表
             Stream<Table> stream = tables.stream();
             if (!this.includes.isEmpty()) {
-                stream = stream.filter(table -> this.includes.contains(table.getTableName()));
+                stream = stream.filter(table -> this.includes.contains(table.getTableName())
+                        && !this.excludes.contains(table.getTableName()));
             }
             tables = stream.peek(table -> {
                 try {
@@ -170,7 +168,7 @@ public class FrameGenSpringBootEntry {
         Path outRootPath;
         try {
             if (null == this.outModuleName || this.outModuleName.isEmpty()) {
-                outRootPath = FileUtil.getModulePath(context.getClass());
+                outRootPath = FileUtil.getModulePath(SpringContextHolder.getContext().getClass());
             } else {
                 outRootPath = FileUtil.getModulePath(this.outModuleName);
             }
