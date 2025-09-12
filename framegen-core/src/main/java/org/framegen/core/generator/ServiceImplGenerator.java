@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Function;
 
 @Slf4j
 public class ServiceImplGenerator {
@@ -45,35 +46,19 @@ public class ServiceImplGenerator {
 
         if (GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.extension.service.impl.ServiceImpl");
-            imports.add(getMapperPackage() + "." + StrUtil.toPascalCase(table.getTableName()) + "Mapper");
-            imports.add(getModelPackage() + "." + StrUtil.toPascalCase(table.getTableName()));
-            imports.add(getServicePackage() + "." + StrUtil.toPascalCase(table.getTableName()) + "Service");
+            imports.add(getFullPackage(PackageConfig::getMapper) + "." + StrUtil.toPascalCase(table.getTableName()) + "Mapper");
+            imports.add(getFullPackage(PackageConfig::getModel) + "." + StrUtil.toPascalCase(table.getTableName()));
+            imports.add(getFullPackage(PackageConfig::getService) + "." + StrUtil.toPascalCase(table.getTableName()) + "Service");
         }
 
         return imports;
     }
 
-    private String getModelPackage() {
+    private String getFullPackage(Function<PackageConfig, String> function) {
         if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + packageConfig.getModel();
+            return packageConfig.getOrigin() + "." + function.apply(packageConfig);
         } else {
-            return packageConfig.getModel();
-        }
-    }
-
-    private String getMapperPackage() {
-        if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + packageConfig.getMapper();
-        } else {
-            return packageConfig.getMapper();
-        }
-    }
-
-    private String getServicePackage() {
-        if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + packageConfig.getService();
-        } else {
-            return packageConfig.getService();
+            return function.apply(packageConfig);
         }
     }
 
@@ -87,11 +72,7 @@ public class ServiceImplGenerator {
     }
 
     protected String getPackagePath() {
-        if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + packageConfig.getServiceImpl();
-        } else {
-            return packageConfig.getServiceImpl();
-        }
+        return getFullPackage(PackageConfig::getServiceImpl);
     }
 
     private GeneratorProps<Properties> getData() {
