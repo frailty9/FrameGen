@@ -11,7 +11,7 @@ import ${import};
 @${annotation}
 </#list>
 <#if data.frameworkName == "MYBATIS_PLUS">
-public interface ${className} extends IService<${modelClassName}> {
+public interface ${className} extends IService<${data.modelClassName}> {
 <#elseif hasImpl?boolean>
 public interface ${className} {
 <#else>
