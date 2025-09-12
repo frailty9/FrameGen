@@ -1,74 +1,48 @@
 package org.framegen.core.generator;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
-import org.framegen.core.generator.props.GeneratorProps;
 import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 @Slf4j
-public class ServiceGenerator {
-
-    private final Template template;
-    private final PackageConfig packageConfig;
-    private final Path codePath;
-    private final Table table;
+public class ServiceGenerator extends AbstractGenerator<Properties> {
 
     public ServiceGenerator(PackageConfig packageConfig, Path codePath, Table table) throws IOException {
-        String templateName = GlobalConfigHolder.enableKotlin ? "service.kt" : "service";
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_34);
-        // 使用类加载器加载模板
-        cfg.setClassLoaderForTemplateLoading(getClass().getClassLoader(), "/templates");
-        cfg.setDefaultEncoding("UTF-8");
-        template = cfg.getTemplate(templateName + ".ftl");
-
-        this.packageConfig = packageConfig;
-        this.codePath = codePath;
-        this.table = table;
+        super("service", packageConfig, codePath, table);
     }
 
-    private List<String> getImports() {
+    @Override
+    protected List<String> getImports() {
         List<String> imports = new ArrayList<>();
 
         if (GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.extension.service.IService");
-            imports.add(getModelPackage() + "." + StrUtil.toPascalCase(table.getTableName()));
+            imports.add(getFullPackage(PackageConfig::getModel) + "." + StrUtil.toPascalCase(table.getTableName()));
         }
 
         return imports;
     }
 
-    private String getModelPackage() {
-        if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + packageConfig.getModel();
-        } else {
-            return packageConfig.getModel();
-        }
+    @Override
+    protected List<String> getAnnotations() {
+        return new ArrayList<>();
     }
 
-    private List<String> getAnnotations() {
-        List<String> annotations = new ArrayList<>();
-        return annotations;
-    }
-
-    private String getFlieName() {
+    @Override
+    protected String getClassName() {
         return StrUtil.toPascalCase(table.getTableName()) + "Service";
     }
 
+    @Override
     protected String getPackagePath() {
         if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
             return packageConfig.getOrigin() + "." + packageConfig.getService();
@@ -77,47 +51,12 @@ public class ServiceGenerator {
         }
     }
 
-    private GeneratorProps<Properties> getData() {
-
-        String className = StrUtil.toPascalCase(table.getTableName() + "_service");
-
+    @Override
+    protected Properties getMoreData() {
         Properties data = new Properties();
         data.setProperty("frameworkName", GlobalConfigHolder.repositoryFramework.name());
         data.setProperty("modelClassName", StrUtil.toPascalCase(table.getTableName()));
         data.setProperty("hasImpl", String.valueOf(null != packageConfig.getServiceImpl()));
-
-        log.debug("FrameGen: ServiceGenerator data: {}", data);
-
-        GeneratorProps.Builder<Properties> builder = GeneratorProps.builder();
-        builder.packagePath(getPackagePath())
-                .imports(getImports())
-                .annotations(getAnnotations())
-                .classComment(getFlieName())
-                .className(className)
-                .data(data);
-
-        return builder.build();
+        return data;
     }
-
-    protected void write(Object data, File outFile) throws TemplateException, IOException {
-        Writer writer = new FileWriter(outFile);
-        template.process(data, writer);
-        writer.flush();
-    }
-
-    public void generate() throws TemplateException, IOException {
-
-        Path modelDirPath = codePath.resolve(
-                getPackagePath().replace(".", File.separator));
-
-        // 创建输出目录
-        if (!modelDirPath.toFile().exists())
-            modelDirPath.toFile().mkdirs();
-        // 输出的文件路径
-        Path modelFilePath = modelDirPath.resolve(getFlieName() +
-                (GlobalConfigHolder.enableKotlin ? ".kt" : ".java"));
-
-        this.write(getData(), modelFilePath.toFile());
-    }
-
 }
