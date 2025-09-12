@@ -11,7 +11,7 @@ import ${import};
 @${annotation}
 </#list>
 <#if data.frameworkName == "MYBATIS_PLUS">
-class ${className} : ServiceImpl<${mapperName}, ${modelName}>(), ${interfaceName} {
+class ${className} : ServiceImpl<${mapperClassName}, ${modelClassName}>(), ${interfaceName} {
 <#else>
 class ${className} implements ${interfaceName} {
 </#if>
