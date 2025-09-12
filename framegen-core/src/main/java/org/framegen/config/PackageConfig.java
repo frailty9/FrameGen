@@ -18,6 +18,8 @@ public class PackageConfig {
     private String mapper;
     // 服务层包名
     private String service;
+    // 服务实现层包名
+    private String serviceImpl;
     // 控制层包名
     private String controller;
 
@@ -30,6 +32,7 @@ public class PackageConfig {
         private String model;
         private String mapper;
         private String service;
+        private String serviceImpl;
         private String controller;
 
         public Builder origin(String origin) {
@@ -48,12 +51,16 @@ public class PackageConfig {
             this.service = service;
             return this;
         }
+        public Builder serviceImpl(String serviceImpl) {
+            this.serviceImpl = serviceImpl;
+            return this;
+        }
         public Builder controller(String controller) {
             this.controller = controller;
             return this;
         }
         public PackageConfig build() {
-            return new PackageConfig(origin, model, mapper, service, controller);
+            return new PackageConfig(origin, model, mapper, service, serviceImpl, controller);
         }
     }
 }
