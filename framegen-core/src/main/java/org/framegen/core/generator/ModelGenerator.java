@@ -15,7 +15,7 @@ import java.util.*;
 public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
 
     public ModelGenerator(PackageConfig packageConfig, Path codePath, Table table) throws IOException {
-        super("", packageConfig, codePath, table);
+        super("model", packageConfig, codePath, table);
     }
 
     @Override
