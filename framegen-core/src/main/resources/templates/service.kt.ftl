@@ -12,7 +12,7 @@ import ${import};
 </#list>
 <#if data.frameworkName == "MYBATIS_PLUS">
 interface ${className} : IService<${modelClassName}> {
-<#elseif (hasImpl)>
+<#elseif hasImpl?boolean>
 interface ${className} {
 <#else>
 class ${className} {
