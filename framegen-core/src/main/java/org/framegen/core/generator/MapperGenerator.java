@@ -27,7 +27,7 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
             imports.add("org.apache.ibatis.annotations.Mapper");
         }
         if (GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
-            imports.add("com.baomidou.mybatisplus.core.mapper.BaseMapper;");
+            imports.add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
             imports.add(getFullPackage(PackageConfig::getModel) + "." + StrUtil.toPascalCase(table.getTableName()));
         }
 
