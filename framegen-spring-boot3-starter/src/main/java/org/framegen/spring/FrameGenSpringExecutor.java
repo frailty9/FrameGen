@@ -10,9 +10,9 @@ import org.framegen.spring.generator.SpringServiceImplGenerator;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class SpringFrameGenExecutor extends FrameGenExecutor {
+public class FrameGenSpringExecutor extends FrameGenExecutor {
 
-    public SpringFrameGenExecutor(PackageConfig packageConfig, boolean enableMybatis, boolean enableMybatisPlus, Path outRootPath) {
+    public FrameGenSpringExecutor(PackageConfig packageConfig, boolean enableMybatis, boolean enableMybatisPlus, Path outRootPath) {
         super(packageConfig, enableMybatis, enableMybatisPlus, outRootPath);
     }
 

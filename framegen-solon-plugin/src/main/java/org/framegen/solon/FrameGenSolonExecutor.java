@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 
-public class SolonFrameGenExecutor extends FrameGenExecutor {
+public class FrameGenSolonExecutor extends FrameGenExecutor {
 
-    public SolonFrameGenExecutor(PackageConfig packageConfig, boolean enableMybatis, boolean enableMybatisPlus, Path outRootPath) {
+    public FrameGenSolonExecutor(PackageConfig packageConfig, boolean enableMybatis, boolean enableMybatisPlus, Path outRootPath) {
         super(packageConfig, enableMybatis, enableMybatisPlus, outRootPath);
     }
 
