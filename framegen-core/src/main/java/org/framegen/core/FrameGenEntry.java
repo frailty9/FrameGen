@@ -23,16 +23,17 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 public class FrameGenEntry {
 
-    private Collection<String> includes = new ArrayList<>();
-    private Collection<String> excludes = new ArrayList<>();
-    private String outModuleName;
-    private PackageConfig packageConfig;
-    private boolean enableMybatis = false;
-    private boolean enableMybatisPlus = false;
+    protected Collection<String> includes = new ArrayList<>();
+    protected Collection<String> excludes = new ArrayList<>();
+    protected String outModuleName;
+    protected PackageConfig packageConfig;
+    protected boolean enableMybatis = false;
+    protected boolean enableMybatisPlus = false;
 
     // 传入连接配置的构造方法
     public FrameGenEntry(JdbcConfig jdbcConfig) {
@@ -124,18 +125,21 @@ public class FrameGenEntry {
                 log.warn("FrameGen: 未找到任何表，请检查数据库配置");
                 return;
             }
-            
-            tables = tables.stream()
-                    .filter(table -> this.includes.contains(table.getTableName())
-                            && !this.excludes.contains(table.getTableName()))
-                    .peek(table -> {
-                        try {
-                            table.setColumns(query.getTableColumns(table.getTableName()));
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .collect(Collectors.toList());
+
+            // 过滤表
+            Stream<Table> stream = tables.stream();
+            if (!this.includes.isEmpty()) {
+                stream = stream.filter(table -> this.includes.contains(table.getTableName())
+                        && !this.excludes.contains(table.getTableName()));
+            }
+            tables = stream.peek(table -> {
+                try {
+                    // 查询列信息并存放到表对象中
+                    table.setColumns(query.getTableColumns(table.getTableName()));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList());
 
             executor.execute(tables);
         } catch (Exception e) {
@@ -144,7 +148,7 @@ public class FrameGenEntry {
         }
     }
 
-    private void setDefaultPackages() {
+    protected void setDefaultPackages() {
         if (null == packageConfig.getModel()) {
             packageConfig.setModel("model");
         }
@@ -159,7 +163,7 @@ public class FrameGenEntry {
         }
     }
 
-    private <T> Path getOutputPath(Class<T> clazz) {
+    protected <T> Path getOutputPath(Class<T> clazz) {
         Path outRootPath;
         try {
             if (null == this.outModuleName || this.outModuleName.isEmpty()) {
