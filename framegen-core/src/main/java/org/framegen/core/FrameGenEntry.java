@@ -3,16 +3,11 @@ package org.framegen.core;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
-import org.framegen.config.RepositoryFrameworkEnum;
-import org.framegen.core.db.converter.AbstractTypeConverter;
-import org.framegen.core.db.converter.ConverterFactory;
 import org.framegen.core.db.DataSourceHolder;
 import org.framegen.core.db.Query;
 import org.framegen.core.db.impl.HikariDataSourceGetter;
 import org.framegen.config.JdbcConfig;
 import org.framegen.core.file.FileUtil;
-import org.framegen.core.generator.*;
-import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
 
 import javax.sql.DataSource;
