@@ -4,6 +4,8 @@ public class StrUtil {
 
     /**
      * 大驼峰
+     * @param name 原始字符串, 由-或_分隔的单词
+     * @return 大驼峰化后的字符串
      */
     public static String toPascalCase(String name) {
         if (name == null || name.isEmpty()) return "";
@@ -18,7 +20,6 @@ public class StrUtil {
                 nextUpper = false;
             } else {
                 sb.append(c);
-                nextUpper = false;
             }
         }
         return sb.toString();
@@ -26,6 +27,8 @@ public class StrUtil {
 
     /**
      * 小驼峰
+     * @param name 原始字符串, 由-或_分隔的单词
+     * @return 小驼峰化后的字符串
      */
     public static String toCamelCase(String name) {
         if (name == null || name.isEmpty()) return "";
@@ -40,7 +43,6 @@ public class StrUtil {
                 nextUpper = false;
             } else {
                 sb.append(c);
-                nextUpper = false;
             }
         }
         return sb.toString();
