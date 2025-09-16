@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.frailty9</groupId>
@@ -11,24 +11,36 @@
 
     <artifactId>framegen-spring-boot3-starter</artifactId>
 
+    <name>FrameGen Spring Boot 3 Starter</name>
+    <description>FrameGen integration for Spring Boot 3 applications</description>
+    <url>https://gitee.com/frailty/frame-gen/tree/main/framegen-spring-boot3-starter</url>
+
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://gitee.com/frailty/frame-gen.git</connection>
+        <developerConnection>scm:git:git@gitee.com:frailty/frame-gen.git</developerConnection>
+        <url>https://gitee.com/frailty/frame-gen</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>Frailty</id>
+            <name>花殇</name>
+            <email>ydl9263@qq.com</email>
+        </developer>
+    </developers>
+
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- Spring Boot 依赖 -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.3.13</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -46,6 +58,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
+            <version>3.3.13</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
