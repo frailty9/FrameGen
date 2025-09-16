@@ -1,13 +1,14 @@
 package org.framegen.solon;
 
 import lombok.extern.slf4j.Slf4j;
-import org.framegen.core.FrameGenEntry;
+
+import org.framegen.core.AbstractEntry;
 import org.framegen.core.service.SolonDataSourceFactory;
 import org.framegen.solon.util.SolonContextHolder;
 import org.noear.solon.core.AppContext;
 
 @Slf4j
-public class FrameGenSolonEntry extends FrameGenEntry {
+public class FrameGenSolonEntry extends AbstractEntry<FrameGenSolonEntry> {
 
     public FrameGenSolonEntry(AppContext context) {
         this(context, null);
@@ -23,6 +24,11 @@ public class FrameGenSolonEntry extends FrameGenEntry {
 
     public FrameGenSolonEntry create(AppContext context, String dataSourceName) {
         return new FrameGenSolonEntry(context, dataSourceName);
+    }
+
+    @Override
+    public FrameGenSolonEntry self() {
+        return this;
     }
 
     public void run() {
