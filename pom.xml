@@ -47,10 +47,8 @@
 
     <modules>
         <module>framegen-core</module>
-        <module>framegen-gui</module>
         <module>framegen-solon-plugin</module>
         <module>framegen-spring-boot3-starter</module>
-        <module>framegen-cli</module>
     </modules>
 
     <properties>
@@ -58,19 +56,6 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- Solon 依赖 -->
-            <dependency>
-                <groupId>org.noear</groupId>
-                <artifactId>solon-parent</artifactId>
-                <version>2.9.1</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
