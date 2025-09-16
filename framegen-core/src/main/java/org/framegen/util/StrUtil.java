@@ -1,5 +1,8 @@
 package org.framegen.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class StrUtil {
 
     /**
@@ -46,6 +49,23 @@ public class StrUtil {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * 统计字符串包含汉字的个数
+     * @param text 待统计的字符串
+     * @return 汉字的个数
+     */
+    public static int countChineseChars(String text) {
+        // 使用正则表达式匹配中文字符
+        Pattern pattern = Pattern.compile("[\\u4e00-\\u9fa5]");
+        Matcher matcher = pattern.matcher(text);
+
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
     }
 
 }
