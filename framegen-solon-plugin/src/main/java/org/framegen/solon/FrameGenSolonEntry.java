@@ -2,11 +2,9 @@ package org.framegen.solon;
 
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.core.FrameGenEntry;
-import org.framegen.solon.db.SolonDataSourceGetter;
+import org.framegen.core.service.SolonDataSourceFactory;
 import org.framegen.solon.util.SolonContextHolder;
 import org.noear.solon.core.AppContext;
-
-import javax.sql.DataSource;
 
 @Slf4j
 public class FrameGenSolonEntry extends FrameGenEntry {
@@ -16,13 +14,7 @@ public class FrameGenSolonEntry extends FrameGenEntry {
     }
 
     public FrameGenSolonEntry(AppContext context, String dataSourceName) {
-        super(getDataSourceFromContext(context, dataSourceName));
-    }
-
-    private static DataSource getDataSourceFromContext(AppContext context, String dataSourceName) {
-        SolonContextHolder.setContext(context);
-        SolonDataSourceGetter.setPreferredDataSourceName(dataSourceName);
-        return new SolonDataSourceGetter().getDataSource();
+        super(new SolonDataSourceFactory(context).getDataSource(), dataSourceName);
     }
 
     public FrameGenSolonEntry create(AppContext context) {

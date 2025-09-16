@@ -3,7 +3,7 @@ package org.framegen.core;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
-import org.framegen.core.db.DataSourceHolder;
+import org.framegen.core.service.DataSourceHolder;
 import org.framegen.core.db.Query;
 import org.framegen.core.db.impl.HikariDataSourceGetter;
 import org.framegen.config.JdbcConfig;
@@ -38,6 +38,12 @@ public class FrameGenEntry {
     // 传入数据源的构造方法
     public FrameGenEntry(DataSource dataSource) {
         DataSourceHolder.setDataSource(dataSource);
+    }
+
+    // 多数据源构造方法
+    public FrameGenEntry(Map<String, DataSource> dataSourceMap, String dataSourceName) {
+        DataSourceHolder.setDataSourceMap(dataSourceMap);
+        DataSourceHolder.changeDataSource(dataSourceName);
     }
 
     public static FrameGenEntry create(JdbcConfig jdbcConfig) {

@@ -2,13 +2,13 @@ package org.framegen.core.db.impl;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.framegen.core.db.DataSourceFactory;
+import org.framegen.core.service.DataSourceFactory;
 import org.framegen.config.JdbcConfig;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
-public class HikariDataSourceGetter implements DataSourceFactory {
+public class HikariDataSourceGetter implements DataSourceFactory<DataSource> {
 
     private final Properties configProps;
 
