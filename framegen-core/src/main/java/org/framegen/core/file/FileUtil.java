@@ -24,7 +24,7 @@ public class FileUtil {
     /**
      * 判断当前项目是否为多模块项目
      *
-     * @return true: 多模块项目; false: 单模块项目; null: 无法判断
+     * @return true: 多模块项目; false: 单模块项目;
      */
     public static Boolean isMultiModule() {
 
@@ -50,7 +50,7 @@ public class FileUtil {
             }
         }
         log.error("判断多模项目失败");
-        return null;
+        return false;
     }
 
     /**
