@@ -66,7 +66,11 @@ public class ConsoleUtils {
         long stepMillis = totalMillis / text.length();
         for (char c : text.toCharArray()) {
             System.out.print(c);
-            try { Thread.sleep(stepMillis); } catch (InterruptedException e) { break; }
+            try {
+                Thread.sleep(stepMillis);
+            } catch (InterruptedException e) {
+                break;
+            }
         }
         System.out.println();
     }
@@ -114,16 +118,14 @@ public class ConsoleUtils {
     // ======== 输入方法 ========
 
     public static String readLine() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            return scanner.nextLine().trim();
-        }
+        return ScannerHolder.getScanner().nextLine().trim();
     }
 
     public static int readInt(String prompt) {
         while (true) {
-            try (Scanner scanner = new Scanner(System.in)) {
+            try {
                 System.out.print(prompt);
-                return Integer.parseInt(scanner.nextLine().trim());
+                return Integer.parseInt(readLine());
             } catch (NumberFormatException e) {
                 error("请输入有效数字！");
             }
@@ -135,19 +137,17 @@ public class ConsoleUtils {
     }
 
     public static boolean readYesNo(String prompt, boolean defaultToYes) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.print(prompt + " (" + (defaultToYes ? "Y/n" : "y/N") + "): ");
-            String input = scanner.nextLine().trim();
-            
-            if (defaultToYes && (input.equalsIgnoreCase("n") || input.equalsIgnoreCase("no"))) {
-                return false;
-            }
-            if (!defaultToYes && (input.equalsIgnoreCase("y") || input.equalsIgnoreCase("yes"))) {
-                return true;
-            }
-            
-            return defaultToYes;
+        System.out.print(prompt + " (" + (defaultToYes ? "Y/n" : "y/N") + "): ");
+        String input = readLine();
+
+        if (defaultToYes && (input.equalsIgnoreCase("n") || input.equalsIgnoreCase("no"))) {
+            return false;
         }
+        if (!defaultToYes && (input.equalsIgnoreCase("y") || input.equalsIgnoreCase("yes"))) {
+            return true;
+        }
+
+        return defaultToYes;
     }
 
     // ======== 菜单方法 ========
@@ -161,8 +161,8 @@ public class ConsoleUtils {
         System.out.print("\n请输入选择: ");
 
         while (true) {
-            try (Scanner scanner = new Scanner(System.in)) {
-                int choice = Integer.parseInt(scanner.nextLine().trim());
+            try {
+                int choice = Integer.parseInt(readLine());
                 if (choice == 0) return 0;
                 if (choice >= 1 && choice <= options.size()) {
                     return choice;
@@ -184,9 +184,7 @@ public class ConsoleUtils {
         System.out.print("\n请输入选择: ");
 
         String input;
-        try (Scanner scanner = new Scanner(System.in)) {
-            input = scanner.nextLine().trim();
-        }
+        input = readLine();
         Set<Integer> selected = new LinkedHashSet<>();
         Set<Integer> excluded = new LinkedHashSet<>();
 
