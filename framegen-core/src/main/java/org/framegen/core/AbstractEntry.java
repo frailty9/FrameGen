@@ -11,6 +11,7 @@ import org.framegen.core.file.FileUtil;
 import org.framegen.core.model.Table;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -180,5 +181,31 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         outRootPath = outRootPath.resolve("src").resolve("main");
         log.debug("FrameGen: outRootPath: {}", outRootPath);
         return outRootPath;
+    }
+
+    /**
+     * 运行命令行模式
+     */
+    public void runCli() {
+        try {
+            // 尝试动态加载FrameGenCLI类
+            Class<?> frameGenCLIClass = Class.forName("org.framegen.core.FrameGenCLI");
+
+            // 实例化FrameGenCLI类
+            Object frameGenCLIInstance = frameGenCLIClass.getDeclaredConstructor().newInstance();
+
+            // 获取runCommandLine方法
+            Method runCommandLineMethod = frameGenCLIClass.getDeclaredMethod("runCommandLine");
+
+            // 调用runCommandLine方法
+            runCommandLineMethod.invoke(frameGenCLIInstance);
+        } catch (ClassNotFoundException e) {
+            // 如果类未找到
+            String msg = "请检查是否引入了framegen-cli依赖";
+            log.error(msg);
+            throw new RuntimeException(msg, e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
