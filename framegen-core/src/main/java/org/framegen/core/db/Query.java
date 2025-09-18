@@ -27,9 +27,9 @@ public class Query implements AutoCloseable {
     public Query() throws SQLException {
         this.connection = DataSourceHolder.getDataSource().getConnection();
         DatabaseMetaData metaData = this.connection.getMetaData();
-        String databaseProductName = metaData.getDatabaseProductName();
-        this.sqlProvider = SqlProviderFactory.getSqlProvider(databaseProductName);
-        this.typeConverter = ConverterFactory.getConverter(databaseProductName);
+        DatabaseProduct databaseProduct = DatabaseProduct.fromProductName(metaData.getDatabaseProductName());
+        this.sqlProvider = SqlProviderFactory.getSqlProvider(databaseProduct);
+        this.typeConverter = ConverterFactory.getConverter(databaseProduct);
     }
 
     public List<Table> getTables() throws SQLException {
