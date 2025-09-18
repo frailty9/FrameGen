@@ -9,4 +9,6 @@ public class SolonContextHolder {
     @Getter
     @Setter
     private static AppContext context;
+
+    private SolonContextHolder() {}
 }

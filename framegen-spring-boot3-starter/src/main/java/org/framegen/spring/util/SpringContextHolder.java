@@ -10,4 +10,5 @@ public class SpringContextHolder {
     @Setter
     private static ApplicationContext context;
 
+    private SpringContextHolder() {}
 }
