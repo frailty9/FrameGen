@@ -20,12 +20,12 @@ public class MapperXmlGenerator extends AbstractGenerator<Properties> {
 
     @Override
     protected List<String> getImports() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     protected List<String> getAnnotations() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
