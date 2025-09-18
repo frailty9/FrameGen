@@ -7,11 +7,11 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.nio.file.*;
+import java.util.*;
 
 /**
  * 文件工具类
@@ -54,53 +54,93 @@ public class FileUtil {
     }
 
     /**
-     * 查找模块对应路径
-     * 广度优先搜索
-     * @param path 当前目录
-     * @param moduleName 模块名
-     * @param currentDepth 当前深度
-     * @return 模块路径; null: 找不到
+     * 查找模块对应路径（广度优先搜索）
+     *
+     * @param startDir   起始目录
+     * @param moduleName 模块名（要匹配的目录名）
+     * @param maxDepth   最大搜索深度（从 startDir 开始计算）
+     * @return 模块对应的 Path
+     * @throws NoSuchFileException      如果未找到模块
+     * @throws IOException              如果访问目录时发生 I/O 错误
+     * @throws SecurityException        如果无权限访问某目录
+     * @throws IllegalArgumentException 如果输入参数无效
      */
-    public static Path getModulePath(File path, String moduleName, int currentDepth) {
-        if (currentDepth > MaxDepth) {
-            return null;
+    public static Path findModulePath(Path startDir, String moduleName, int maxDepth)
+            throws IOException {
+
+        // 参数校验
+        if (startDir == null) {
+            throw new IllegalArgumentException("起始目录不能为 null");
         }
-        if ("src".equals(path.getName())) {
-            return null;
+        if (moduleName == null || moduleName.trim().isEmpty()) {
+            throw new IllegalArgumentException("模块名不能为空");
+        }
+        if (maxDepth < 0) {
+            throw new IllegalArgumentException("最大深度不能为负数");
+        }
+        if (!Files.exists(startDir)) {
+            throw new NoSuchFileException("起始目录不存在: " + startDir.toAbsolutePath());
+        }
+        if (!Files.isDirectory(startDir)) {
+            throw new NotDirectoryException("起始路径不是目录: " + startDir.toAbsolutePath());
         }
 
-        File[] files = path.listFiles();
-        ArrayList<File> dirs = new ArrayList<>();
-        if (null != files) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    if (file.getName().equals(moduleName)) {
-                        return file.toPath();
+        // 使用队列实现 BFS
+        Queue<Path> queue = new LinkedList<>();
+        queue.add(startDir);
+
+        // 防止循环（如符号链接导致的重复访问）
+        Set<Path> visited = new HashSet<>();
+        visited.add(startDir);
+
+        while (!queue.isEmpty()) {
+            Path current = queue.poll();
+
+            // 计算当前深度（相对于起始目录）
+            int depth = current.getNameCount() - startDir.getNameCount();
+            if (depth > maxDepth) {
+                continue; // 超出深度，不再深入
+            }
+
+            // 检查当前目录名是否匹配模块名
+            if (current.getFileName() != null &&
+                    current.getFileName().toString().equals(moduleName)) {
+                return current; // 找到！直接返回
+            }
+
+            // 跳过 "src" 目录（根据你的原始逻辑）
+            Path fileName = current.getFileName();
+            if (fileName != null && "src".equals(fileName.toString())) {
+                continue;
+            }
+
+            // 遍历子目录
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(current, Files::isDirectory)) {
+                for (Path subDir : stream) {
+                    if (visited.add(subDir)) { // 如果是新目录
+                        queue.add(subDir);
                     }
-                    dirs.add(file);
                 }
+            } catch (IOException | SecurityException e) {
+                // 记录警告，但不停止整个搜索
+                System.err.println("无法访问目录，跳过: " + current + " -> " + e.getMessage());
+                // 继续搜索其他路径
             }
         }
-        for (File dir : dirs) {
-            Path result = getModulePath(dir, moduleName, currentDepth + 1);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
+
+        // BFS 结束仍未找到，抛出异常
+        throw new NoSuchFileException(
+                "未找到模块 '" + moduleName + "'。在路径 '" + startDir.toAbsolutePath() +
+                        "' 下深度 " + maxDepth + " 范围内未搜索到。");
     }
 
-    public static Path getModulePath(String moduleName) {
+    public static Path findModulePath(String moduleName) throws IOException {
         String rootPath = System.getProperty("user.dir");
 
-        Path result = getModulePath(new File(rootPath), moduleName, 1);
-        if(null == result) {
-            log.warn("FrameGen: 找不到指定模块名: {}", moduleName);
-        }
-        return result;
+        return findModulePath(Paths.get(rootPath), moduleName, 1);
     }
 
-    public static <T> Path getModulePath(Class<T> clazz) throws URISyntaxException {
+    public static <T> Path findModulePath(Class<T> clazz) throws URISyntaxException {
         URL resource = clazz.getClassLoader().getResource("");
         if (null == resource) throw new NullPointerException();
         Path classPath = Paths.get(resource.toURI());

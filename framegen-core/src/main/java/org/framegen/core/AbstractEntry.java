@@ -11,6 +11,7 @@ import org.framegen.core.file.FileUtil;
 import org.framegen.core.model.Table;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -30,7 +31,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     protected Collection<String> includes = new ArrayList<>();
     protected Collection<String> excludes = new ArrayList<>();
-    protected String outModuleName;
+    protected String outModuleName = "";
     protected PackageConfig packageConfig;
     protected boolean enableMybatis = false;
     protected boolean enableMybatisPlus = false;
@@ -75,7 +76,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     }
 
     public T outModule(String outModuleName) {
-        this.outModuleName = outModuleName;
+        this.outModuleName = null == outModuleName ? "" : outModuleName;
         return self();
     }
 
@@ -165,19 +166,16 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected <E> Path getOutputPath(Class<E> clazz) {
         Path outRootPath;
         try {
-            if (null == this.outModuleName || this.outModuleName.isEmpty()) {
-                outRootPath = FileUtil.getModulePath(clazz);
+            if (this.outModuleName.isEmpty()) {
+                outRootPath = FileUtil.findModulePath(clazz);
             } else {
-                outRootPath = FileUtil.getModulePath(this.outModuleName);
+                outRootPath = FileUtil.findModulePath(this.outModuleName);
             }
-        } catch (NullPointerException | URISyntaxException e) {
+        } catch (NullPointerException | URISyntaxException | IOException e) {
+            log.warn("FrameGen: 无法确定输出路径, 将使用当前工作目录作为输出路径");
             outRootPath = Paths.get(System.getProperty("user.dir"));
         }
-        
-        if (null == outRootPath) {
-            throw new NullPointerException("无法确定输出路径");
-        }
-        
+
         outRootPath = outRootPath.resolve("src").resolve("main");
         log.debug("FrameGen: outRootPath: {}", outRootPath);
         return outRootPath;
