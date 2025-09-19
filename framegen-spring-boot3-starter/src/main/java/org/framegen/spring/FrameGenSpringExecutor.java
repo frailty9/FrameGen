@@ -18,11 +18,11 @@ public class FrameGenSpringExecutor extends FrameGenExecutor {
 
     @Override
     protected void createMapper(Table table) throws IOException, TemplateException {
-        new SpringMapperGenerator(this.packageConfig, this.outRootPath, table).generate();
+        new SpringMapperGenerator(this.packageConfig, this.codePath, table).generate();
     }
 
     @Override
     protected void createServiceImpl(Table table) throws IOException, TemplateException {
-        new SpringServiceImplGenerator(this.packageConfig, this.outRootPath, table).generate();
+        new SpringServiceImplGenerator(this.packageConfig, this.codePath, table).generate();
     }
 }

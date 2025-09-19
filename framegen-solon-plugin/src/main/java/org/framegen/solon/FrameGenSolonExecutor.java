@@ -18,6 +18,6 @@ public class FrameGenSolonExecutor extends FrameGenExecutor {
 
     @Override
     protected void createServiceImpl(Table table) throws IOException, TemplateException {
-        new SolonServiceImplGenerator(this.packageConfig, this.outRootPath, table).generate();
+        new SolonServiceImplGenerator(this.packageConfig, this.codePath, table).generate();
     }
 }

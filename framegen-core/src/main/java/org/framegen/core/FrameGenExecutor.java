@@ -18,8 +18,8 @@ public class FrameGenExecutor {
     private final boolean enableMybatis;
     private final boolean enableMybatisPlus;
     protected final Path outRootPath;
-    private final Path codePath;
-    private final Path resourcePath;
+    protected final Path codePath;
+    protected final Path resourcePath;
 
     public FrameGenExecutor(PackageConfig packageConfig, boolean enableMybatis,
                             boolean enableMybatisPlus, Path outRootPath) {
