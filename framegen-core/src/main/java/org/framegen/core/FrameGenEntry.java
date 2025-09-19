@@ -1,11 +1,8 @@
 package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
-import org.framegen.config.PackageConfig;
 import org.framegen.config.JdbcConfig;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -13,19 +10,10 @@ import javax.sql.DataSource;
 @Slf4j
 public class FrameGenEntry extends AbstractEntry<FrameGenEntry> {
 
-    protected Collection<String> includes = new ArrayList<>();
-    protected Collection<String> excludes = new ArrayList<>();
-    protected String outModuleName;
-    protected PackageConfig packageConfig;
-    protected boolean enableMybatis = false;
-    protected boolean enableMybatisPlus = false;
-
-    // 传入连接配置的构造方法
     public FrameGenEntry(JdbcConfig jdbcConfig) {
         super(jdbcConfig);
     }
 
-    // 传入数据源的构造方法
     public FrameGenEntry(DataSource dataSource) {
         super(dataSource);
     }
@@ -45,5 +33,10 @@ public class FrameGenEntry extends AbstractEntry<FrameGenEntry> {
     @Override
     public FrameGenEntry self() {
         return this;
+    }
+
+    @Override
+    protected Class<? extends FrameGenExecutor> getExecutorClass() {
+        return FrameGenExecutor.class;
     }
 }

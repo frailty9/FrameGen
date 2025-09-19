@@ -12,6 +12,7 @@ import org.framegen.core.model.Table;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -112,12 +113,24 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         return self();
     }
 
-    public <E> void run(Class<E> clazz) {
+    protected abstract Class<? extends FrameGenExecutor> getExecutorClass();
+
+    protected FrameGenExecutor getExecutor(Path outRootPath) {
+        try {
+            Constructor<? extends FrameGenExecutor> ctor = getExecutorClass().getDeclaredConstructor(
+                    PackageConfig.class, boolean.class, boolean.class, Path.class);
+            return ctor.newInstance(packageConfig, enableMybatis, enableMybatisPlus, outRootPath);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create executor: " + getExecutorClass(), e);
+        }
+    }
+
+    public <Any> void run(Class<Any> clazz) {
         // 设置默认包名
         setDefaultPackages();
-        
         Path outRootPath = getOutputPath(clazz);
-        FrameGenExecutor executor = new FrameGenExecutor(packageConfig, enableMybatis, enableMybatisPlus, outRootPath);
+        // 获取执行器
+        FrameGenExecutor executor = getExecutor(outRootPath);
 
         try (Query query = new Query()) {
             List<Table> tables = query.getTables();

@@ -3,6 +3,7 @@ package org.framegen.spring;
 import lombok.extern.slf4j.Slf4j;
 
 import org.framegen.core.AbstractEntry;
+import org.framegen.core.FrameGenExecutor;
 import org.framegen.core.service.SpringDataSourceFactory;
 import org.framegen.spring.util.SpringContextHolder;
 import org.springframework.context.ApplicationContext;
@@ -33,5 +34,10 @@ public class FrameGenSpringBootEntry extends AbstractEntry<FrameGenSpringBootEnt
 
     public void run() {
         super.run(SpringContextHolder.getContext().getClass());
+    }
+
+    @Override
+    protected Class<? extends FrameGenExecutor> getExecutorClass() {
+        return FrameGenSpringExecutor.class;
     }
 }

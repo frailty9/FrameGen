@@ -3,6 +3,7 @@ package org.framegen.solon;
 import lombok.extern.slf4j.Slf4j;
 
 import org.framegen.core.AbstractEntry;
+import org.framegen.core.FrameGenExecutor;
 import org.framegen.core.service.SolonDataSourceFactory;
 import org.framegen.solon.util.SolonContextHolder;
 import org.noear.solon.core.AppContext;
@@ -29,6 +30,11 @@ public class FrameGenSolonEntry extends AbstractEntry<FrameGenSolonEntry> {
     @Override
     public FrameGenSolonEntry self() {
         return this;
+    }
+
+    @Override
+    protected Class<? extends FrameGenExecutor> getExecutorClass() {
+        return FrameGenSolonExecutor.class;
     }
 
     public void run() {
