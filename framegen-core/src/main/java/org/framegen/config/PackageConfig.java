@@ -39,28 +39,49 @@ public class PackageConfig {
             this.origin = origin;
             return this;
         }
+
         public Builder model(String model) {
             this.model = model;
             return this;
         }
+
         public Builder mapper(String mapper) {
             this.mapper = mapper;
             return this;
         }
+
         public Builder service(String service) {
             this.service = service;
             return this;
         }
+
         public Builder serviceImpl(String serviceImpl) {
             this.serviceImpl = serviceImpl;
             return this;
         }
+
         public Builder controller(String controller) {
             this.controller = controller;
             return this;
         }
+
         public PackageConfig build() {
             return new PackageConfig(origin, model, mapper, service, serviceImpl, controller);
+        }
+    }
+
+    public void applyDefault(FrameworkConfig frameworkConfig) {
+        if (null == model) {
+            model = "model";
+        }
+        if (null == mapper && (frameworkConfig.isEnableMybatis() || frameworkConfig.isEnableMybatisPlus())) {
+            mapper = "mapper";
+        }
+        if (null == service && frameworkConfig.isEnableMybatisPlus()) {
+            service = "service";
+        }
+        if (null == serviceImpl && frameworkConfig.isEnableMybatisPlus()) {
+            serviceImpl = "service.impl";
         }
     }
 }

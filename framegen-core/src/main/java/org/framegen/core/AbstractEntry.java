@@ -127,7 +127,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     public <Any> void run(Class<Any> clazz) {
         // 设置默认包名
-        setDefaultPackages();
+        packageConfig.applyDefault(frameworkConfig);
         Path outRootPath = getOutputPath(clazz);
         // 获取执行器
         FrameGenExecutor executor = getExecutor(outRootPath);
@@ -161,21 +161,6 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         }
     }
 
-    protected void setDefaultPackages() {
-        if (null == packageConfig.getModel()) {
-            packageConfig.setModel("model");
-        }
-        if (null == packageConfig.getMapper() && (enableMybatis || enableMybatisPlus)) {
-            packageConfig.setMapper("mapper");
-        }
-        if (null == packageConfig.getService() && enableMybatisPlus) {
-            packageConfig.setService("service");
-        }
-        if (null == packageConfig.getServiceImpl() && enableMybatisPlus) {
-            packageConfig.setServiceImpl("service.impl");
-        }
-    }
-
     protected <E> Path getOutputPath(Class<E> clazz) {
         Path outRootPath;
         try {
@@ -199,6 +184,10 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
      */
     public void runCli() {
         try {
+            packageConfig.applyDefault(frameworkConfig);
+
+            Path outRootPath = getOutputPath(this.getClass());
+
             // 尝试动态加载FrameGenCLI类
             Class<?> frameGenCLIClass = Class.forName("org.framegen.core.FrameGenCLI");
 
