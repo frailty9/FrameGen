@@ -2,6 +2,8 @@ package org.framegen.core.file;
 
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -10,8 +12,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 文件工具类
@@ -21,36 +27,120 @@ public class FileUtil {
 
     public static int MaxDepth = 3;
 
+    // 匹配 include 后的模块名（支持 "name"、'name'、:name）
+    private static final Pattern INCLUDE_PATTERN = Pattern.compile(
+            "include\\s+([\"'`:][^\"'`)]+)"
+    );
+    // 匹配模块名（从 "module" 或 :module 中提取）
+    private static final Pattern MODULE_NAME_PATTERN = Pattern.compile(
+            "[\"':]([^\"':\\s,()]+)"
+    );
+
     /**
      * 判断当前项目是否为多模块项目
      *
      * @return true: 多模块项目; false: 单模块项目;
      */
-    public static Boolean isMultiModule() {
+    public static List<String> getModuleNames() {
 
         String rootPath = System.getProperty("user.dir");
-        if (new File(Paths.get(rootPath, "settings.gradle.kts").toString()).exists()) {
-            return true;
-        }
-        if (new File(Paths.get(rootPath, "settings.gradle").toString()).exists()) {
-            return true;
-        }
-        File xmlFile = new File(Paths.get(rootPath, "pom.xml").toString());
-        if (xmlFile.exists()) {
-            try {
-                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                Document doc = dBuilder.parse(xmlFile);
-                doc.getDocumentElement().normalize();
+        Path settings = Paths.get(rootPath, "settings.gradle");
+        Path settingsKt = Paths.get(rootPath, "settings.gradle.kts");
+        Path mavenPom = Paths.get(rootPath, "pom.xml");
 
-                NodeList modulesList = doc.getElementsByTagName("modules");
-                return modulesList.getLength() > 0;
-            } catch (Exception ignored) {
+        if (Files.exists(settings)) {
+            return extractModulesFromGradle(settings);
+        }
+        if (Files.exists(settingsKt)) {
+            return extractModulesFromGradle(settingsKt);
+        }
+        if (Files.exists(mavenPom)) {
+            return extractModulesFromMaven(mavenPom);
+        }
 
+        return Collections.emptyList();
+    }
+
+    /**
+     * 从 settings.gradle 文件中提取子模块名（正则解析，初期方案）
+     *
+     * @param settingsFile settings.gradle 文件路径
+     * @param charset      文件编码
+     * @return 模块名列表，如 ["app", "lib"]
+     */
+    public static List<String> extractModulesFromGradle(Path settingsFile, Charset charset) {
+        try {
+            // 读取文件内容
+            String content = new String(Files.readAllBytes(settingsFile), charset);
+            // 解析模块名
+            List<String> modules = new ArrayList<>();
+            Matcher matcher = INCLUDE_PATTERN.matcher(content);
+            // 循环匹配
+            while (matcher.find()) {
+                String includePart = matcher.group(1);
+                Matcher nameMatcher = MODULE_NAME_PATTERN.matcher(includePart);
+                while (nameMatcher.find()) {
+                    String moduleName = nameMatcher.group(1).trim();
+                    if (!moduleName.isEmpty()) {
+                        modules.add(moduleName);
+                    }
+                }
             }
+            return modules;
+        } catch (IOException e) {
+            System.err.println("Failed to read settings file: " + e.getMessage());
+            return Collections.emptyList();
         }
-        log.error("判断多模项目失败");
-        return false;
+    }
+
+    // 重载方法，使用默认字符集为 UTF-8
+    // TODO: 后期适配多字符集
+    public static List<String> extractModulesFromGradle(Path settingsFile) {
+        return extractModulesFromGradle(settingsFile, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 从 Maven 的 pom.xml 文件中提取子模块名称列表。
+     *
+     * @param pomPath pom.xml 文件路径
+     * @return 模块名列表，如 ["app", "lib"]
+     */
+    public static List<String> extractModulesFromMaven(Path pomPath) {
+        List<String> modules = new ArrayList<>();
+        try {
+            // 创建 XML 解析器工厂和构建器
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            // 将 Path 转为 File 并解析 XML 文档
+            File pomFile = pomPath.toFile();
+            Document doc = builder.parse(pomFile);
+
+            // 获取根元素并验证是否为 project（基础校验）
+            Element root = doc.getDocumentElement();
+            if (root == null || !"project".equalsIgnoreCase(root.getTagName())) {
+                return Collections.emptyList();
+            }
+            // 查找所有 <module> 标签
+            NodeList moduleNodes = doc.getElementsByTagName("module");
+
+            // 遍历每个 <module> 节点，提取文本内容作为模块名
+            for (int i = 0; i < moduleNodes.getLength(); i++) {
+                Node node = moduleNodes.item(i);
+                // 确保是元素节点
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    String moduleName = node.getTextContent().trim();
+                    if (!moduleName.isEmpty()) {
+                        modules.add(moduleName);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // 解析失败时返回空列表
+            return Collections.emptyList();
+        }
+        // 返回不可变列表（避免外部修改）
+        return Collections.unmodifiableList(modules);
     }
 
     /**
