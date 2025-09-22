@@ -34,13 +34,28 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
             imports.add(getFullPackage(PackageConfig::getService) + "." + StrUtil.toPascalCase(table.getTableName())
                     + "Service");
         }
+        if (frameworkConfig.isEnableSolon()) {
+            imports.add("org.noear.solon.annotation.Component");
+        }
+        if (frameworkConfig.isEnableSpring()) {
+            imports.add("org.springframework.stereotype.Service");
+        }
 
         return imports;
     }
 
     @Override
     protected List<String> getAnnotations() {
-        return new ArrayList<>();
+        List<String> annotations = new ArrayList<>();
+
+        if (frameworkConfig.isEnableSolon()) {
+            annotations.add("Component");
+        }
+        if (frameworkConfig.isEnableSpring()) {
+            annotations.add("Service");
+        }
+
+        return annotations;
     }
 
     @Override

@@ -31,6 +31,9 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
             imports.add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
             imports.add(getFullPackage(PackageConfig::getModel) + "." + StrUtil.toPascalCase(table.getTableName()));
         }
+        if (frameworkConfig.isEnableSpring()) {
+            imports.add("org.springframework.stereotype.Repository");
+        }
 
         return imports;
     }
@@ -42,6 +45,9 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
                 || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             annotations.add("Mapper");
+        }
+        if (frameworkConfig.isEnableSpring()) {
+            annotations.add("Repository");
         }
 
         return annotations;
