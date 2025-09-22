@@ -17,13 +17,17 @@ import java.util.List;
 public class FrameGenExecutor {
     protected final PackageConfig packageConfig;
     protected final FrameworkConfig frameworkConfig;
-    protected final Path outRootPath;
-    protected final Path codePath;
-    protected final Path resourcePath;
+    protected Path outRootPath;
+    protected Path codePath;
+    protected Path resourcePath;
 
     public FrameGenExecutor(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path outRootPath) {
         this.packageConfig = packageConfig;
         this.frameworkConfig = frameworkConfig;
+        setOutRootPath(outRootPath);
+    }
+
+    public void setOutRootPath(Path outRootPath) {
         this.outRootPath = outRootPath;
         this.codePath = outRootPath.resolve(GlobalConfigHolder.enableKotlin ? "kotlin" : "java");
         this.resourcePath = outRootPath.resolve("resources");
