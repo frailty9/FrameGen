@@ -124,7 +124,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         }
     }
 
-    public <Any> void run(Class<Any> clazz) {
+    public void run(Class<?> clazz) {
         // 设置默认包名
         packageConfig.applyDefault(frameworkConfig);
         Path outRootPath = getOutputPath(clazz);
@@ -160,7 +160,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         }
     }
 
-    protected <E> Path getOutputPath(Class<E> clazz) {
+    protected Path getOutputPath(Class<?> clazz) {
         Path outRootPath;
         try {
             if (this.outModuleName.isEmpty()) {
@@ -173,7 +173,9 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             outRootPath = Paths.get(System.getProperty("user.dir"));
         }
 
-        outRootPath = outRootPath.resolve("src").resolve("main");
+        if (outRootPath != null) {
+            outRootPath = outRootPath.resolve("src").resolve("main");
+        }
         log.debug("FrameGen: outRootPath: {}", outRootPath);
         return outRootPath;
     }
@@ -183,8 +185,6 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
      */
     public void runCli() {
         try {
-            packageConfig.applyDefault(frameworkConfig);
-
             Path outRootPath = getOutputPath(this.getClass());
 
             // 尝试动态加载FrameGenCLI类
@@ -194,10 +194,10 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             Object frameGenCLIInstance = frameGenCLIClass.getDeclaredConstructor().newInstance();
 
             // 获取runCommandLine方法
-            Method runCommandLineMethod = frameGenCLIClass.getDeclaredMethod("runCommandLine");
+            Method runCommandLineMethod = frameGenCLIClass.getDeclaredMethod("runCommandLine", FrameGenExecutor.class);
 
             // 调用runCommandLine方法
-            runCommandLineMethod.invoke(frameGenCLIInstance);
+            runCommandLineMethod.invoke(frameGenCLIInstance, getExecutor(outRootPath));
         } catch (ClassNotFoundException e) {
             // 如果类未找到
             String msg = "请检查是否引入了framegen-cli依赖";
