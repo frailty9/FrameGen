@@ -230,10 +230,20 @@ public class FileUtil {
         return findModulePath(Paths.get(rootPath), moduleName, 1);
     }
 
-    public static <T> Path findModulePath(Class<T> clazz) throws URISyntaxException {
+    /**
+     * 查找模块路径（根据类所在包名）
+     *
+     * @param clazz 要查找的类
+     * @return 模块路径 ！！注意可能为null！！
+     */
+    public static Path findModulePath(Class<?> clazz) {
+        try {
         URL resource = clazz.getClassLoader().getResource("");
         if (null == resource) throw new NullPointerException();
         Path classPath = Paths.get(resource.toURI());
         return classPath.getParent().getParent();
+        } catch (URISyntaxException e) {
+            return null;
+        }
     }
 }
