@@ -1,5 +1,6 @@
 package org.framegen.config;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -7,7 +8,9 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public final class FrameworkConfig {
+    @Getter
     private Boolean enableSpring;
+    @Getter
     private Boolean enableSolon;
     public RepositoryFrameworkEnum repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
 
