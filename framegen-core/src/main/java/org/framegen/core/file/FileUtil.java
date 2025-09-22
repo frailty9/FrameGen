@@ -238,10 +238,10 @@ public class FileUtil {
      */
     public static Path findModulePath(Class<?> clazz) {
         try {
-        URL resource = clazz.getClassLoader().getResource("");
-        if (null == resource) throw new NullPointerException();
-        Path classPath = Paths.get(resource.toURI());
-        return classPath.getParent().getParent();
+            URL resource = clazz.getClassLoader().getResource("");
+            if (null == resource) throw new NullPointerException();
+            Path classPath = Paths.get(resource.toURI());
+            return classPath.getParent().getParent();
         } catch (URISyntaxException e) {
             return null;
         }
