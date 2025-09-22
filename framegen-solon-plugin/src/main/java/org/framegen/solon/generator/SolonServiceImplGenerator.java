@@ -1,5 +1,6 @@
 package org.framegen.solon.generator;
 
+import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.generator.ServiceImplGenerator;
 import org.framegen.core.model.Table;
@@ -10,8 +11,8 @@ import java.util.List;
 
 public class SolonServiceImplGenerator extends ServiceImplGenerator {
 
-    public SolonServiceImplGenerator(PackageConfig packageConfig, Path codePath, Table table) throws IOException {
-        super(packageConfig, codePath, table);
+    public SolonServiceImplGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
+        super(packageConfig, frameworkConfig, codePath, table);
     }
 
     @Override

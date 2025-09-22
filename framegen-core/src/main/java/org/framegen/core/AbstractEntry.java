@@ -15,7 +15,6 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -97,12 +96,12 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     }
 
     public T mybatis() {
-        this.frameworkConfig.setEnableMybatis(true);
+        this.frameworkConfig.enableMybatis();
         return self();
     }
 
     public T mybatisPlus() {
-        this.frameworkConfig.setEnableMybatisPlus(true);
+        this.frameworkConfig.enableMybatisPlus();
         return self();
     }
 

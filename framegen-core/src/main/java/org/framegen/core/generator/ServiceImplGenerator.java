@@ -1,7 +1,8 @@
 package org.framegen.core.generator;
 
 import lombok.extern.slf4j.Slf4j;
-import org.framegen.config.GlobalConfigHolder;
+
+import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.model.Table;
@@ -16,15 +17,16 @@ import java.util.Properties;
 @Slf4j
 public class ServiceImplGenerator extends AbstractGenerator<Properties> {
 
-    public ServiceImplGenerator(PackageConfig packageConfig, Path codePath, Table table) throws IOException {
-        super("serviceImpl", packageConfig, codePath, table);
+    public ServiceImplGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath,
+            Table table) throws IOException {
+        super("serviceImpl", packageConfig, frameworkConfig, codePath, table);
     }
 
     @Override
     protected List<String> getImports() {
         List<String> imports = new ArrayList<>();
 
-        if (GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
+        if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.extension.service.impl.ServiceImpl");
             imports.add(getFullPackage(PackageConfig::getMapper) + "." + StrUtil.toPascalCase(table.getTableName())
                     + "Mapper");
@@ -54,7 +56,7 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
     @Override
     protected Properties getMoreData() {
         Properties data = new Properties();
-        data.setProperty("frameworkName", GlobalConfigHolder.repositoryFramework.name());
+        data.setProperty("frameworkName", frameworkConfig.repositoryFramework.name());
         data.setProperty("modelClassName", StrUtil.toPascalCase(table.getTableName()));
         data.setProperty("mapperClassName", StrUtil.toPascalCase(table.getTableName()) + "Mapper");
         data.setProperty("interfaceName", StrUtil.toPascalCase(table.getTableName()) + "Service");

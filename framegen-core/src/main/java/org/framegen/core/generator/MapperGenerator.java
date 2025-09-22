@@ -1,7 +1,8 @@
 package org.framegen.core.generator;
 
 import lombok.extern.slf4j.Slf4j;
-import org.framegen.config.GlobalConfigHolder;
+
+import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.model.Table;
@@ -14,19 +15,19 @@ import java.util.*;
 @Slf4j
 public class MapperGenerator extends AbstractGenerator<Properties> {
 
-    public MapperGenerator(PackageConfig packageConfig, Path codePath, Table table) throws IOException {
-        super("mapper", packageConfig, codePath, table);
+    public MapperGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
+        super("mapper", packageConfig, frameworkConfig, codePath, table);
     }
 
     @Override
     protected List<String> getImports() {
         List<String> imports = new ArrayList<>();
 
-        if (GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
-                || GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
+        if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
+                || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("org.apache.ibatis.annotations.Mapper");
         }
-        if (GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
+        if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
             imports.add(getFullPackage(PackageConfig::getModel) + "." + StrUtil.toPascalCase(table.getTableName()));
         }
@@ -38,8 +39,8 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
     protected List<String> getAnnotations() {
         List<String> annotations = new ArrayList<>();
 
-        if (GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
-                || GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
+        if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
+                || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             annotations.add("Mapper");
         }
 
@@ -59,7 +60,7 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
     @Override
     protected Properties getMoreData() {
         Properties data = new Properties();
-        data.setProperty("frameworkName", GlobalConfigHolder.repositoryFramework.name());
+        data.setProperty("frameworkName", frameworkConfig.repositoryFramework.name());
         data.setProperty("modelClassName", StrUtil.toPascalCase(table.getTableName()));
         return data;
     }

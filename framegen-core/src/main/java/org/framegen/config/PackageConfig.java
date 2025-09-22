@@ -74,13 +74,14 @@ public class PackageConfig {
         if (null == model) {
             model = "model";
         }
-        if (null == mapper && (frameworkConfig.isEnableMybatis() || frameworkConfig.isEnableMybatisPlus())) {
+        if (null == mapper && (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
+                || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS)) {
             mapper = "mapper";
         }
-        if (null == service && frameworkConfig.isEnableMybatisPlus()) {
+        if (null == service && frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             service = "service";
         }
-        if (null == serviceImpl && frameworkConfig.isEnableMybatisPlus()) {
+        if (null == serviceImpl && frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             serviceImpl = "service.impl";
         }
     }

@@ -2,6 +2,8 @@ package org.framegen.core.generator;
 
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+
+import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
@@ -14,8 +16,8 @@ import java.util.*;
 @Slf4j
 public class MapperXmlGenerator extends AbstractGenerator<Properties> {
 
-    public MapperXmlGenerator(PackageConfig packageConfig, Path resourcePath, Table table) throws IOException {
-        super("mapper.xml", packageConfig, resourcePath, table);
+    public MapperXmlGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path resourcePath, Table table) throws IOException {
+        super("mapper.xml", packageConfig, frameworkConfig, resourcePath, table);
     }
 
     @Override

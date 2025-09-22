@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
 
+import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.generator.props.GeneratorProps;
@@ -23,12 +24,14 @@ public abstract class AbstractGenerator<E> {
     protected final Template template;
     // 包配置
     protected final PackageConfig packageConfig;
+    // 框架配置
+    protected final FrameworkConfig frameworkConfig;
     // 代码输出路径
     protected final Path codePath;
     // 表信息
     protected final Table table;
 
-    public AbstractGenerator(String baseTemplateName, PackageConfig packageConfig, Path codePath, Table table)
+    public AbstractGenerator(String baseTemplateName, PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table)
             throws IOException {
         // 拼接模板文件名
         StringBuilder templateName = new StringBuilder().append(baseTemplateName);
@@ -45,13 +48,14 @@ public abstract class AbstractGenerator<E> {
         template = cfg.getTemplate(templateName.toString());
 
         this.packageConfig = packageConfig;
+        this.frameworkConfig = frameworkConfig;
         this.codePath = codePath;
         this.table = table;
     }
 
     /**
      * 工具方法, 获取指定包的完整包路径
-     * 
+     *
      * @param function 传入PackageConfig属性的Getter
      * @return 完整包路径
      */

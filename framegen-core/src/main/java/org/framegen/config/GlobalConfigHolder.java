@@ -8,7 +8,5 @@ public final class GlobalConfigHolder {
 
     public static boolean enableMultiThread = false;
 
-    public static RepositoryFrameworkEnum repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
-
     private GlobalConfigHolder() {}
 }

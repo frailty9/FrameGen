@@ -35,14 +35,6 @@ public class FrameGenExecutor {
 
     public void execute(List<Table> tables) {
         try {
-            // 设置全局持久层框架
-            if (frameworkConfig.isEnableMybatisPlus()) {
-                GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.MYBATIS_PLUS;
-            } else if (frameworkConfig.isEnableMybatis()) {
-                GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.MYBATIS;
-            } else {
-                GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
-            }
 
             log.info("FrameGen: 输出路径: {}", outRootPath);
             log.debug("FrameGen: 代码路径: {}", codePath);
@@ -56,8 +48,8 @@ public class FrameGenExecutor {
                 if (null != packageConfig.getMapper()) {
                     createMapper(table);
                     // 生成Mybatis映射文件
-                    if (GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS ||
-                            GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
+                    if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS ||
+                            frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
                         createMapperXml(table);
                     }
                 }
@@ -77,27 +69,27 @@ public class FrameGenExecutor {
     }
 
     protected void createModel(Table table) throws IOException, TemplateException {
-        ModelGenerator modelGenerator = new ModelGenerator(packageConfig, codePath, table);
+        ModelGenerator modelGenerator = new ModelGenerator(packageConfig, frameworkConfig, codePath, table);
         modelGenerator.generate();
     }
 
     protected void createMapper(Table table) throws IOException, TemplateException {
-        MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, codePath, table);
+        MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, frameworkConfig, codePath, table);
         mapperGenerator.generate();
     }
 
     protected void createMapperXml(Table table) throws IOException, TemplateException {
-        MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig, resourcePath, table);
+        MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig, frameworkConfig, resourcePath, table);
         mapperXmlGenerator.generate();
     }
 
     protected void createService(Table table) throws IOException, TemplateException {
-        ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, codePath, table);
+        ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, frameworkConfig, codePath, table);
         serviceGenerator.generate();
     }
 
     protected void createServiceImpl(Table table) throws IOException, TemplateException {
-        ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig, codePath, table);
+        ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig, frameworkConfig, codePath, table);
         serviceImplGenerator.generate();
     }
 }

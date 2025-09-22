@@ -1,6 +1,8 @@
 package org.framegen.core.generator;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.model.Column;
@@ -14,8 +16,8 @@ import java.util.*;
 @Slf4j
 public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
 
-    public ModelGenerator(PackageConfig packageConfig, Path codePath, Table table) throws IOException {
-        super("model", packageConfig, codePath, table);
+    public ModelGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
+        super("model", packageConfig, frameworkConfig, codePath, table);
     }
 
     @Override
