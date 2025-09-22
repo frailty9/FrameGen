@@ -2,6 +2,7 @@ package org.framegen.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.List;
 
 public class StrUtil {
 
@@ -68,4 +69,25 @@ public class StrUtil {
         return count;
     }
 
+    /**
+     * 获取字符串列表的共同前缀
+     * @param strings 字符串列表
+     * @return 共同前缀，如果没有则返回null
+     */
+    public static String getCommonPrefix(List<String> strings) {
+        if (strings == null || strings.isEmpty()) {
+            return "";
+        }
+        
+        String prefix = strings.get(0);
+        for (String str : strings) {
+            while (!str.startsWith(prefix)) {
+                prefix = prefix.substring(0, prefix.length() - 1);
+                if (prefix.isEmpty()) {
+                    return "";
+                }
+            }
+        }
+        return prefix;
+    }
 }
