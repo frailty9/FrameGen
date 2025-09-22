@@ -16,7 +16,8 @@ public class ConsoleUtils {
      * Java 8 安全的字符串重复（替代 String.repeat()）
      */
     private static String repeat(String str, int count) {
-        if (count <= 0) return "";
+        if (count <= 0)
+            return "";
         StringBuilder sb = new StringBuilder(str.length() * count);
         for (int i = 0; i < count; i++) {
             sb.append(str);
@@ -117,18 +118,21 @@ public class ConsoleUtils {
 
     // ======== 输入方法 ========
 
-    public static String readLine() {
+    private static String readLine() {
         return ScannerHolder.getScanner().nextLine().trim();
     }
 
-    public static int readInt(String prompt) {
-        while (true) {
-            try {
-                System.out.print(prompt);
-                return Integer.parseInt(readLine());
-            } catch (NumberFormatException e) {
-                error("请输入有效数字！");
-            }
+    public static String readLine(String prompt) {
+        System.out.print(prompt);
+        return readLine();
+    }
+
+    public static int readInt(String prompt, int defaultInt) {
+        try {
+            System.out.printf("%s[%d]: ", prompt, defaultInt);
+            return Integer.parseInt(readLine());
+        } catch (Exception e) {
+            return defaultInt;
         }
     }
 
@@ -137,13 +141,13 @@ public class ConsoleUtils {
     }
 
     public static boolean readYesNo(String prompt, boolean defaultToYes) {
-        System.out.print(prompt + " (" + (defaultToYes ? "Y/n" : "y/N") + "): ");
+        System.out.printf("%s[%s]: ", prompt, defaultToYes ? "Y/n" : "y/N");
         String input = readLine();
 
-        if (defaultToYes && (input.equalsIgnoreCase("n") || input.equalsIgnoreCase("no"))) {
+        if (input.equalsIgnoreCase("n") || input.equalsIgnoreCase("no")) {
             return false;
         }
-        if (!defaultToYes && (input.equalsIgnoreCase("y") || input.equalsIgnoreCase("yes"))) {
+        if (input.equalsIgnoreCase("y") || input.equalsIgnoreCase("yes")) {
             return true;
         }
 
@@ -152,25 +156,24 @@ public class ConsoleUtils {
 
     // ======== 菜单方法 ========
 
-    public static int selectOne(String title, List<String> options) {
+    public static int selectOne(String title, List<String> options, int defaultOption) {
         title(title);
         for (int i = 0; i < options.size(); i++) {
             System.out.printf("  %d. %s%n", i + 1, options.get(i));
         }
-        System.out.println("  0. 退出");
-        System.out.print("\n请输入选择: ");
+        if (0 != defaultOption)
+            System.out.printf("\n请输入选择[%d]: ", defaultOption);
+        else
+            System.out.print("\n请输入选择: ");
 
-        while (true) {
-            try {
-                int choice = Integer.parseInt(readLine());
-                if (choice == 0) return 0;
-                if (choice >= 1 && choice <= options.size()) {
-                    return choice;
-                }
-                error("请输入 0-" + options.size() + " 之间的数字");
-            } catch (NumberFormatException e) {
-                error("请输入数字");
+        try {
+            int choice = Integer.parseInt(readLine());
+            if (choice >= 1 && choice <= options.size()) {
+                return choice;
             }
+            return defaultOption;
+        } catch (Exception e) {
+            return defaultOption;
         }
     }
 
@@ -181,21 +184,20 @@ public class ConsoleUtils {
         }
         System.out.println("  可输入：1 2 3 或 1,2,3 或 all");
         System.out.println("  排除模式：-1 -2 -3 或 -1,-2,-3");
-        System.out.print("\n请输入选择: ");
+        System.out.print("\n请输入选择[all]: ");
 
         String input;
         input = readLine();
         Set<Integer> selected = new LinkedHashSet<>();
         Set<Integer> excluded = new LinkedHashSet<>();
 
-        if (input.equalsIgnoreCase("all")) {
-            for (int i = 1; i <= options.size(); i++) selected.add(i);
-            return selected;
-        }
-
         String[] parts = input.split("[,，\\s]+");
         for (String part : parts) {
-            if (part.isEmpty()) continue;
+            if (part.equalsIgnoreCase("all") || part.equalsIgnoreCase("a")) {
+                break;
+            }
+            if (part.isEmpty())
+                continue;
             try {
                 int num = Integer.parseInt(part);
                 if (num >= 1 && num <= options.size()) {
@@ -218,6 +220,7 @@ public class ConsoleUtils {
             }
         }
 
+        // 全选或无效输入则直接返回空集合
         return selected;
     }
 }
