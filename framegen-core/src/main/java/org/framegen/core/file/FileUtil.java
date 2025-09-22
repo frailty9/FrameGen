@@ -246,4 +246,15 @@ public class FileUtil {
             return null;
         }
     }
+
+    /**
+     * 获取模块名（根据类所在包名）
+     * @param clazz 要查找的类
+     * @return 模块名
+     */
+    public static String getModuleName(Class<?> clazz) {
+        Path modulePath = findModulePath(clazz);
+        if (modulePath == null) return "";
+        else return modulePath.getFileName().toString();
+    }
 }
