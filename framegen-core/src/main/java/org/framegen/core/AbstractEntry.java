@@ -1,6 +1,7 @@
 package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
+import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.service.DataSourceHolder;
@@ -33,9 +34,8 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected Collection<String> includes = new ArrayList<>();
     protected Collection<String> excludes = new ArrayList<>();
     protected String outModuleName = "";
-    protected PackageConfig packageConfig;
-    protected boolean enableMybatis = false;
-    protected boolean enableMybatisPlus = false;
+    protected PackageConfig packageConfig = PackageConfig.builder().build();
+    protected FrameworkConfig frameworkConfig = new FrameworkConfig();
 
     // 传入连接配置的构造方法
     public AbstractEntry(JdbcConfig jdbcConfig) {
@@ -97,12 +97,12 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     }
 
     public T mybatis() {
-        this.enableMybatis = true;
+        this.frameworkConfig.setEnableMybatis(true);
         return self();
     }
 
     public T mybatisPlus() {
-        this.enableMybatisPlus = true;
+        this.frameworkConfig.setEnableMybatisPlus(true);
         return self();
     }
 
@@ -118,8 +118,8 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected FrameGenExecutor getExecutor(Path outRootPath) {
         try {
             Constructor<? extends FrameGenExecutor> ctor = getExecutorClass().getDeclaredConstructor(
-                    PackageConfig.class, boolean.class, boolean.class, Path.class);
-            return ctor.newInstance(packageConfig, enableMybatis, enableMybatisPlus, outRootPath);
+                    PackageConfig.class, FrameworkConfig.class, Path.class);
+            return ctor.newInstance(packageConfig, frameworkConfig, outRootPath);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create executor: " + getExecutorClass(), e);
         }
@@ -165,11 +165,11 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         Path outRootPath;
         try {
             if (this.outModuleName.isEmpty()) {
-                outRootPath = FileUtil.findModulePath(clazz);
+                outRootPath = FileUtil.findModulePath(getClass());
             } else {
                 outRootPath = FileUtil.findModulePath(this.outModuleName);
             }
-        } catch (NullPointerException | URISyntaxException | IOException e) {
+        } catch (NullPointerException | IOException e) {
             log.warn("FrameGen: 无法确定输出路径, 将使用当前工作目录作为输出路径");
             outRootPath = Paths.get(System.getProperty("user.dir"));
         }

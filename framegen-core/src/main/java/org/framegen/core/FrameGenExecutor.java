@@ -2,6 +2,7 @@ package org.framegen.core;
 
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
@@ -15,17 +16,14 @@ import java.util.List;
 @Slf4j
 public class FrameGenExecutor {
     protected final PackageConfig packageConfig;
-    private final boolean enableMybatis;
-    private final boolean enableMybatisPlus;
+    protected final FrameworkConfig frameworkConfig;
     protected final Path outRootPath;
     protected final Path codePath;
     protected final Path resourcePath;
 
-    public FrameGenExecutor(PackageConfig packageConfig, boolean enableMybatis,
-                            boolean enableMybatisPlus, Path outRootPath) {
+    public FrameGenExecutor(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path outRootPath) {
         this.packageConfig = packageConfig;
-        this.enableMybatis = enableMybatis;
-        this.enableMybatisPlus = enableMybatisPlus;
+        this.frameworkConfig = frameworkConfig;
         this.outRootPath = outRootPath;
         this.codePath = outRootPath.resolve(GlobalConfigHolder.enableKotlin ? "kotlin" : "java");
         this.resourcePath = outRootPath.resolve("resources");
@@ -34,9 +32,9 @@ public class FrameGenExecutor {
     public void execute(List<Table> tables) {
         try {
             // 设置全局持久层框架
-            if (enableMybatisPlus) {
+            if (frameworkConfig.isEnableMybatisPlus()) {
                 GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.MYBATIS_PLUS;
-            } else if (enableMybatis) {
+            } else if (frameworkConfig.isEnableMybatis()) {
                 GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.MYBATIS;
             } else {
                 GlobalConfigHolder.repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
@@ -54,7 +52,8 @@ public class FrameGenExecutor {
                 if (null != packageConfig.getMapper()) {
                     createMapper(table);
                     // 生成Mybatis映射文件
-                    if (this.enableMybatis || this.enableMybatisPlus) {
+                    if (GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS ||
+                            GlobalConfigHolder.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
                         createMapperXml(table);
                     }
                 }

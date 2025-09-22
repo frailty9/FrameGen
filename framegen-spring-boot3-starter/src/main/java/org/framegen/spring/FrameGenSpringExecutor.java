@@ -1,6 +1,7 @@
 package org.framegen.spring;
 
 import freemarker.template.TemplateException;
+import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.FrameGenExecutor;
 import org.framegen.core.model.Table;
@@ -12,8 +13,8 @@ import java.nio.file.Path;
 
 public class FrameGenSpringExecutor extends FrameGenExecutor {
 
-    public FrameGenSpringExecutor(PackageConfig packageConfig, boolean enableMybatis, boolean enableMybatisPlus, Path outRootPath) {
-        super(packageConfig, enableMybatis, enableMybatisPlus, outRootPath);
+    public FrameGenSpringExecutor(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path outRootPath) {
+        super(packageConfig, frameworkConfig, outRootPath);
     }
 
     @Override

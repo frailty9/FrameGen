@@ -1,6 +1,6 @@
 package org.framegen.config;
 
-public class GlobalConfigHolder {
+public final class GlobalConfigHolder {
 
     public static boolean enableKotlin = false;
 
@@ -10,4 +10,5 @@ public class GlobalConfigHolder {
 
     public static RepositoryFrameworkEnum repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
 
+    private GlobalConfigHolder() {}
 }
