@@ -231,24 +231,68 @@ public class FileUtil {
     }
 
     /**
-     * 查找模块路径（根据类所在包名）
+     * 查找模块根路径（包含 pom.xml 或 build.gradle 等构建文件的目录）
      *
-     * @param clazz 要查找的类
-     * @return 模块路径 ！！注意可能为null！！
+     * @param clazz 要查找的类（不能为空）
+     * @return 模块路径，未找到返回 null
      */
     public static Path findModulePath(Class<?> clazz) {
+        Objects.requireNonNull(clazz, "clazz 不能为空");
         try {
+            // 获取类加载资源路径
             URL resource = clazz.getClassLoader().getResource("");
-            if (null == resource) throw new NullPointerException();
-            Path classPath = Paths.get(resource.toURI());
-            return classPath.getParent().getParent();
-        } catch (URISyntaxException e) {
+            if (resource == null) {
+                log.warn("FrameGen: 无法获取类 {} 的资源路径", clazz.getName());
+                return null;
+            }
+            Path start;
+            try {
+                start = Paths.get(resource.toURI()).toAbsolutePath();
+            } catch (Exception e) {
+                log.warn("FrameGen: 无法解析类 {} 的资源路径 URI: {}", clazz.getName(), resource, e);
+                return null;
+            }
+            // 向上查找，直到找到包含 pom.xml 或 build.gradle 的目录
+            Path workDir = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
+            Path current = start;
+            do {
+                if (isBuildRoot(current)) {
+                    log.debug("FrameGen: 在路径 {} 找到模块根", current);
+                    return current;
+                }
+                current = current.getParent();
+                if (current == null) {
+                    break; // 到达文件系统根目录
+                }
+            } while (!current.equals(workDir)); // 到达工作目录前继续
+            // 最后检查一次工作目录
+            if (isBuildRoot(workDir)) {
+                log.debug("FrameGen: 在工作目录 {} 找到模块根", workDir);
+                return workDir;
+            }
+            log.warn("FrameGen: 从 {} 向上查找，未找到包含 pom.xml 或 build.gradle 的模块根", start);
+            return null;
+        } catch (Throwable t) {
+            // 防止意外异常（如 StackOverflowError）导致程序崩溃
+            log.warn("FrameGen: 查找模块路径时发生未预期错误", t);
             return null;
         }
     }
 
     /**
+     * 判断是否为构建根目录（包含常见构建文件）
+     */
+    private static boolean isBuildRoot(Path dir) {
+        return Files.exists(dir.resolve("pom.xml"))
+                || Files.exists(dir.resolve("build.gradle"))
+                || Files.exists(dir.resolve("build.gradle.kts"))
+                || Files.isDirectory(dir.resolve(".mvn"))
+                || Files.isDirectory(dir.resolve(".gradle"));
+    }
+
+    /**
      * 获取模块名（根据类所在包名）
+     *
      * @param clazz 要查找的类
      * @return 模块名
      */

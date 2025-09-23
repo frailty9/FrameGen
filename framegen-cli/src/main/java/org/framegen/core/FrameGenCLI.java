@@ -10,6 +10,8 @@ import org.framegen.core.service.DataSourceHolder;
 import org.framegen.util.ConsoleStyle;
 import org.framegen.util.ConsoleUtils;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,9 +62,27 @@ public class FrameGenCLI {
                 table.setColumns(query.getTableColumns(table.getTableName()));
             }
 
-            // === 选择输出目标模块 ===
-            String moduleName = setModuleName();
-            executor.outRootPath = FileUtil.findModulePath(moduleName);
+            // === 选择输出目标 ===
+            List<String> menu1 = new ArrayList<>();
+            menu1.add("通过选择模块");
+            menu1.add("通过输入路径");
+
+            int selected1 = ConsoleUtils.selectOne("选择确定输出位置的方式", menu1, 1);
+            Path outRootPath = null;
+            if (selected1 == 1) {
+                // 选择模块
+                String moduleName = selectModuleName();
+                outRootPath = FileUtil.findModulePath(moduleName);
+            }
+            if (null == outRootPath) {
+                // 输入路径
+                String moduleName = ConsoleUtils.readLine("请输入输出项目的根目录(位于src上层, pom或build.gradle同级): ");
+            }
+            if (null == outRootPath) {
+                ConsoleUtils.error("未选择或输入有效的输出目录");
+                throw new RuntimeException("未选择或输入有效的输出目录");
+            }
+            executor.setOutRootPath(outRootPath);
 
             // === 框架配置项 ===
             setCustomFrameworkConfig(executor.frameworkConfig);
@@ -80,23 +100,31 @@ public class FrameGenCLI {
         }
     }
 
-    private String setModuleName() {
+    private String selectModuleName() {
 
         String selectedName = FileUtil.getModuleName(getClass());
-
         ConsoleUtils.clearScreen();
-        ConsoleUtils.print("当前默认输出目标模块(目录)名为: ");
-        ConsoleUtils.print(selectedName, ConsoleStyle.GREEN);
-
-        boolean isNeedChange = ConsoleUtils.readYesNo(" 是否需要切换: ", false);
-
+        // 标记是否需要切换模块
+        boolean isNeedChange = false;
+        if (selectedName.isEmpty()) {
+            ConsoleUtils.warn("无法自动识别当前模块(项目)根目录");
+        } else {
+            ConsoleUtils.print("当前默认输出目标模块(项目)名为: ");
+            ConsoleUtils.print(selectedName, ConsoleStyle.GREEN);
+            isNeedChange = ConsoleUtils.readYesNo(" 是否需要切换: ", false);
+        }
         if (isNeedChange) {
             List<String> moduleNames = FileUtil.getModuleNames();
-            int selected = ConsoleUtils.selectOne("请选择输出目标模块(如果菜单不包含所需模块, 输入0切换输入自定义模块名)", moduleNames, 0);
-            if (0 == selected) {
-                return ConsoleUtils.readLine("请输入自定义模块名: ");
+            if (moduleNames.isEmpty()) {
+                ConsoleUtils.warn("无法找到有效的模块(项目)根目录");
             } else {
-                return moduleNames.get(selected - 1);
+                int selected = ConsoleUtils.selectOne("请选择输出目标模块(如果菜单不包含所需模块, 输入0切换输入自定义模块名)",
+                        moduleNames, 0);
+                if (0 == selected) {
+                    return ConsoleUtils.readLine("请输入自定义模块名: ");
+                } else {
+                    return moduleNames.get(selected - 1);
+                }
             }
         }
         return selectedName;
