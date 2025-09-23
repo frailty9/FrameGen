@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.frailty9</groupId>
@@ -10,6 +10,31 @@
     </parent>
 
     <artifactId>framegen-cli</artifactId>
+
+    <name>FrameGen Command Line Interface</name>
+    <description>Command line interface for FrameGen</description>
+    <url>https://gitee.com/frailty/frame-gen/tree/main/framegen-cli</url>
+
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://gitee.com/frailty/frame-gen.git</connection>
+        <developerConnection>scm:git:git@gitee.com:frailty/frame-gen.git</developerConnection>
+        <url>https://gitee.com/frailty/frame-gen</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>Frailty</id>
+            <name>花殇</name>
+            <email>ydl9263@qq.com</email>
+        </developer>
+    </developers>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
