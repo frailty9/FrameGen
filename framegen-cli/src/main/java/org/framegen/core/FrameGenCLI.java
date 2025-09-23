@@ -14,7 +14,6 @@ import org.framegen.util.StrUtil;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -97,6 +96,7 @@ public class FrameGenCLI {
 
             int selected1 = ConsoleUtils.selectOne("选择确定输出位置的方式", menu1, 1);
             Path outRootPath = null;
+            Path resourcePath = null;
             if (selected1 == 1) {
                 // 选择模块
                 String moduleName = selectModuleName();
@@ -104,13 +104,23 @@ public class FrameGenCLI {
             }
             if (null == outRootPath) {
                 // 输入路径
-                String moduleName = ConsoleUtils.readLine("请输入输出项目的根目录(位于src上层, pom或build.gradle同级): ");
+                String moduleName = ConsoleUtils.readLine("请输入输出项目的源码根目录(包名的上一级, 通常为java/kotlin): ");
+                String inputResource = ConsoleUtils.readLine("请输入输出项目的资源根目录(通常为resources): ");
+                resourcePath = Paths.get(inputResource);
+                if (!moduleName.isEmpty()) {
+                    outRootPath = Paths.get(moduleName);
+                }
+            } else {
+                outRootPath = outRootPath.resolve("src/main");
             }
             if (null == outRootPath) {
                 ConsoleUtils.error("未选择或输入有效的输出目录");
                 throw new RuntimeException("未选择或输入有效的输出目录");
             }
-            executor.setOutRootPath(outRootPath.resolve("src/main"));
+            executor.setOutRootPath(outRootPath);
+            if (null != resourcePath) {
+                executor.resourcePath = resourcePath;
+            }
 
             // === 框架配置项 ===
             setCustomFrameworkConfig(executor.frameworkConfig);
@@ -207,7 +217,6 @@ public class FrameGenCLI {
             boolean enableMybatis = ConsoleUtils.readYesNo("您是否使用Mybatis", false);
             if (enableMybatis) {
                 frameworkConfig.repositoryFramework = RepositoryFrameworkEnum.MYBATIS;
-                return;
             }
             boolean enableMybatisPlus = ConsoleUtils.readYesNo("您是否使用Mybatis-Plus", false);
             if (enableMybatisPlus) {
