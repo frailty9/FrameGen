@@ -122,6 +122,15 @@ public class FrameGenCLI {
             executor.packageConfig.applyDefault(executor.frameworkConfig);
 
             // === 开始生成 ===
+            // 展示信息
+            ConsoleUtils.print("生成表格: ");
+            String tableNamesStr = tables.stream()
+                    .map(Table::getTableName)
+                    .collect(Collectors.joining(", "));
+            ConsoleUtils.println(tableNamesStr, ConsoleStyle.GREEN);
+
+            // 等待确认
+            ConsoleUtils.readLine("回车开始生成...");
             executor.execute(tables);
         } catch (Exception e) {
             throw new RuntimeException(e);
