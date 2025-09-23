@@ -10,6 +10,7 @@ import org.framegen.core.db.impl.HikariDataSourceGetter;
 import org.framegen.config.JdbcConfig;
 import org.framegen.core.file.FileUtil;
 import org.framegen.core.model.Table;
+import org.framegen.util.StrUtil;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -112,6 +113,16 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         return self();
     }
 
+    public T removeHeader(String str) {
+        StrUtil.setTableNamePrefix(str);
+        return self();
+    }
+
+    public T removeHeader() {
+        StrUtil.setTableNamePrefix("");
+        return self();
+    }
+
     protected abstract Class<? extends FrameGenExecutor> getExecutorClass();
 
     protected FrameGenExecutor getExecutor(Path outRootPath) {
@@ -152,6 +163,14 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
                     throw new RuntimeException(e);
                 }
             }).collect(Collectors.toList());
+
+            // 判断是否启用移除前缀, 但值为空(表示自动)
+            if ("".equals(StrUtil.getTableNamePrefix())) {
+                String prefix = StrUtil.getCommonPrefix(
+                        tables.stream().map(Table::getTableName).collect(Collectors.toList())
+                );
+                StrUtil.setTableNamePrefix(prefix);
+            }
 
             executor.execute(tables);
         } catch (Exception e) {

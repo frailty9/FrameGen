@@ -13,6 +13,7 @@ import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.generator.props.GeneratorProps;
 import org.framegen.core.model.Table;
+import org.framegen.util.StrUtil;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -83,7 +84,7 @@ public abstract class AbstractGenerator<E> {
 
     // 生成代码的类名
     protected String getClassName() {
-        return table.getPascalCaseName() + classNameSuffix;
+        return StrUtil.removePrefix(table.getPascalCaseName()) + classNameSuffix;
     };
 
     // 生成代码的包路径

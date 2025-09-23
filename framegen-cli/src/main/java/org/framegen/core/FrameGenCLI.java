@@ -1,5 +1,6 @@
 package org.framegen.core;
 
+import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
@@ -9,6 +10,7 @@ import org.framegen.core.model.Table;
 import org.framegen.core.service.DataSourceHolder;
 import org.framegen.util.ConsoleStyle;
 import org.framegen.util.ConsoleUtils;
+import org.framegen.util.StrUtil;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class FrameGenCLI {
 
     public void runCommandLine(FrameGenExecutor executor) {
@@ -62,6 +65,29 @@ public class FrameGenCLI {
                 table.setColumns(query.getTableColumns(table.getTableName()));
             }
 
+            // === 设置表前缀 ===
+            boolean isNeedChange = ConsoleUtils.readYesNo("生成代码时是否需要移除表名前缀", false);
+
+            // 自动尝试获取表前缀
+            if (isNeedChange) {
+                // 更新表名列表
+                List<String> tableNames2 = tables.stream()
+                        .map(Table::getTableName)
+                        .collect(Collectors.toList());
+                // 尝试自动获取表名前缀
+                String tablePrefix = StrUtil.getCommonPrefix(tableNames2);
+                // 手动输入表名前缀， 默认值为自动获取的表名前缀
+                ConsoleUtils.print("请输入表名前缀[");
+                ConsoleUtils.print(tablePrefix, ConsoleStyle.GREEN);
+                ConsoleUtils.print("]: ");
+                String input = ConsoleUtils.readLine("");
+                if (!tablePrefix.isEmpty()) {
+                    tablePrefix = input;
+                }
+                // 格式调整并设置到字符串工具的static变量中
+                StrUtil.setTableNamePrefix(tablePrefix);
+            }
+
             // === 选择输出目标 ===
             List<String> menu1 = new ArrayList<>();
             menu1.add("通过选择模块");
@@ -82,7 +108,7 @@ public class FrameGenCLI {
                 ConsoleUtils.error("未选择或输入有效的输出目录");
                 throw new RuntimeException("未选择或输入有效的输出目录");
             }
-            executor.setOutRootPath(outRootPath);
+            executor.setOutRootPath(outRootPath.resolve("src/main"));
 
             // === 框架配置项 ===
             setCustomFrameworkConfig(executor.frameworkConfig);
