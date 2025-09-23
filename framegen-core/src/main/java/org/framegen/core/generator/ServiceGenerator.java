@@ -27,7 +27,7 @@ public class ServiceGenerator extends AbstractGenerator<Properties> {
 
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.extension.service.IService");
-            imports.add(getFullPackage(PackageConfig::getModel) + "." + StrUtil.toPascalCase(table.getTableName()));
+            imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
         }
 
         return imports;
@@ -40,7 +40,7 @@ public class ServiceGenerator extends AbstractGenerator<Properties> {
 
     @Override
     protected String getClassName() {
-        return StrUtil.toPascalCase(table.getTableName()) + "Service";
+        return table.getPascalCaseName() + "Service";
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ServiceGenerator extends AbstractGenerator<Properties> {
     protected Properties getMoreData() {
         Properties data = new Properties();
         data.setProperty("frameworkName", frameworkConfig.repositoryFramework.name());
-        data.setProperty("modelClassName", StrUtil.toPascalCase(table.getTableName()));
+        data.setProperty("modelClassName", table.getPascalCaseName());
         data.setProperty("hasImpl", String.valueOf(null != packageConfig.getServiceImpl()));
         return data;
     }

@@ -32,7 +32,7 @@ public class MapperXmlGenerator extends AbstractGenerator<Properties> {
 
     @Override
     protected String getClassName() {
-        return StrUtil.toPascalCase(table.getTableName()) + "Mapper";
+        return table.getPascalCaseName() + "Mapper";
     }
 
     @Override

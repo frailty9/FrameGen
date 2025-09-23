@@ -28,10 +28,10 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
 
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.extension.service.impl.ServiceImpl");
-            imports.add(getFullPackage(PackageConfig::getMapper) + "." + StrUtil.toPascalCase(table.getTableName())
+            imports.add(getFullPackage(PackageConfig::getMapper) + "." + table.getPascalCaseName()
                     + "Mapper");
-            imports.add(getFullPackage(PackageConfig::getModel) + "." + StrUtil.toPascalCase(table.getTableName()));
-            imports.add(getFullPackage(PackageConfig::getService) + "." + StrUtil.toPascalCase(table.getTableName())
+            imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
+            imports.add(getFullPackage(PackageConfig::getService) + "." + table.getPascalCaseName()
                     + "Service");
         }
         if (frameworkConfig.isEnableSolon()) {
@@ -60,7 +60,7 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
 
     @Override
     protected String getClassName() {
-        return StrUtil.toPascalCase(table.getTableName()) + "ServiceImpl";
+        return table.getPascalCaseName() + "ServiceImpl";
     }
 
     @Override
@@ -72,9 +72,9 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
     protected Properties getMoreData() {
         Properties data = new Properties();
         data.setProperty("frameworkName", frameworkConfig.repositoryFramework.name());
-        data.setProperty("modelClassName", StrUtil.toPascalCase(table.getTableName()));
-        data.setProperty("mapperClassName", StrUtil.toPascalCase(table.getTableName()) + "Mapper");
-        data.setProperty("interfaceName", StrUtil.toPascalCase(table.getTableName()) + "Service");
+        data.setProperty("modelClassName", table.getPascalCaseName());
+        data.setProperty("mapperClassName", table.getPascalCaseName() + "Mapper");
+        data.setProperty("interfaceName", table.getPascalCaseName() + "Service");
         return data;
     }
 }

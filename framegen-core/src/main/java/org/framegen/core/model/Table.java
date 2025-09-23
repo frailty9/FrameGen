@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.framegen.util.StrUtil;
 
 import java.util.Collection;
 
@@ -24,5 +25,9 @@ public class Table {
         this.tableSchema = tableSchema;
         this.tableName = tableName;
         this.tableComment = tableComment;
+    }
+
+    public String getPascalCaseName() {
+        return StrUtil.toPascalCase(tableName);
     }
 }

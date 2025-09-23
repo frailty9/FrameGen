@@ -82,7 +82,7 @@ public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
 
     @Override
     protected String getClassName() {
-        return StrUtil.toPascalCase(table.getTableName());
+        return table.getPascalCaseName();
     }
 
     @Override
