@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.frailty9</groupId>
         <artifactId>framegen</artifactId>
-        <version>0.2.0</version>
+        <version>0.2.1</version>
     </parent>
 
     <artifactId>framegen-cli</artifactId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>io.github.frailty9</groupId>
             <artifactId>framegen-core</artifactId>
-            <version>0.2.0</version>
+            <version>0.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.jline</groupId>

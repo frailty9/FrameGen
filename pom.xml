@@ -6,7 +6,7 @@
 
     <groupId>io.github.frailty9</groupId>
     <artifactId>framegen</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <packaging>pom</packaging>
 
     <name>FrameGen Code Generator</name>
@@ -36,6 +36,7 @@
 
     <modules>
         <module>framegen-core</module>
+        <module>framegen-cli</module>
         <module>framegen-solon-plugin</module>
         <module>framegen-spring-boot3-starter</module>
     </modules>
