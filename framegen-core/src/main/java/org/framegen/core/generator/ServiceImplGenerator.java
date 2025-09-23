@@ -6,7 +6,6 @@ import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.model.Table;
-import org.framegen.util.StrUtil;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -19,7 +18,7 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
 
     public ServiceImplGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath,
             Table table) throws IOException {
-        super("serviceImpl", packageConfig, frameworkConfig, codePath, table);
+        super("serviceImpl", "ServiceImpl", frameworkConfig, codePath, table, packageConfig);
     }
 
     @Override
@@ -56,11 +55,6 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
         }
 
         return annotations;
-    }
-
-    @Override
-    protected String getClassName() {
-        return table.getPascalCaseName() + "ServiceImpl";
     }
 
     @Override

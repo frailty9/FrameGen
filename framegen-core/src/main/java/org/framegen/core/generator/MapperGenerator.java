@@ -6,7 +6,6 @@ import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.model.Table;
-import org.framegen.util.StrUtil;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,7 +15,7 @@ import java.util.*;
 public class MapperGenerator extends AbstractGenerator<Properties> {
 
     public MapperGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
-        super("mapper", packageConfig, frameworkConfig, codePath, table);
+        super("mapper", "Mapper", frameworkConfig, codePath, table, packageConfig);
     }
 
     @Override
@@ -51,11 +50,6 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
         }
 
         return annotations;
-    }
-
-    @Override
-    protected String getClassName() {
-        return table.getPascalCaseName() + "Mapper";
     }
 
     @Override

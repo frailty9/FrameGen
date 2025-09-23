@@ -30,8 +30,10 @@ public abstract class AbstractGenerator<E> {
     protected final Path codePath;
     // 表信息
     protected final Table table;
+    // 类名后缀
+    protected final String classNameSuffix;
 
-    public AbstractGenerator(String baseTemplateName, PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table)
+    public AbstractGenerator(String baseTemplateName, String classNameSuffix, FrameworkConfig frameworkConfig, Path codePath, Table table, PackageConfig packageConfig)
             throws IOException {
         // 拼接模板文件名
         StringBuilder templateName = new StringBuilder().append(baseTemplateName);
@@ -47,6 +49,7 @@ public abstract class AbstractGenerator<E> {
         cfg.setDefaultEncoding("UTF-8");
         template = cfg.getTemplate(templateName.toString());
 
+        this.classNameSuffix = classNameSuffix;
         this.packageConfig = packageConfig;
         this.frameworkConfig = frameworkConfig;
         this.codePath = codePath;
@@ -79,7 +82,9 @@ public abstract class AbstractGenerator<E> {
     protected abstract List<String> getAnnotations();
 
     // 生成代码的类名
-    protected abstract String getClassName();
+    protected String getClassName() {
+        return table.getPascalCaseName() + classNameSuffix;
+    };
 
     // 生成代码的包路径
     protected abstract String getPackagePath();

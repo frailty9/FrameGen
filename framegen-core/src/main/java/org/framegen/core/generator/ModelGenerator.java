@@ -7,7 +7,6 @@ import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
-import org.framegen.util.StrUtil;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -17,7 +16,7 @@ import java.util.*;
 public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
 
     public ModelGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
-        super("model", packageConfig, frameworkConfig, codePath, table);
+        super("model", "", frameworkConfig, codePath, table, packageConfig);
     }
 
     @Override
@@ -78,11 +77,6 @@ public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
             annotations.add("Builder");
         }
         return annotations;
-    }
-
-    @Override
-    protected String getClassName() {
-        return table.getPascalCaseName();
     }
 
     @Override

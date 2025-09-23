@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.model.Table;
-import org.framegen.util.StrUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.util.*;
 public class MapperXmlGenerator extends AbstractGenerator<Properties> {
 
     public MapperXmlGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path resourcePath, Table table) throws IOException {
-        super("mapper.xml", packageConfig, frameworkConfig, resourcePath, table);
+        super("mapper.xml", "Mapper", frameworkConfig, resourcePath, table, packageConfig);
     }
 
     @Override
@@ -28,11 +27,6 @@ public class MapperXmlGenerator extends AbstractGenerator<Properties> {
     @Override
     protected List<String> getAnnotations() {
         return Collections.emptyList();
-    }
-
-    @Override
-    protected String getClassName() {
-        return table.getPascalCaseName() + "Mapper";
     }
 
     @Override
