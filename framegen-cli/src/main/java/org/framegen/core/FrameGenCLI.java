@@ -180,26 +180,32 @@ public class FrameGenCLI {
     private void setCustomPackage(PackageConfig packageConfig) {
         if (null == packageConfig.getOrigin()) {
             String origin = ConsoleUtils.readLine("请输入您的统一的前缀包名[没有则直接回车]: ");
+            if (origin.isEmpty()) origin = null;
             packageConfig.setOrigin(origin);
         }
         if (null == packageConfig.getModel()) {
             String model = ConsoleUtils.readLine("请输入您的Model包名[model]: ");
+            if (model.isEmpty()) model = null;
             packageConfig.setModel(model);
         }
         if (null == packageConfig.getMapper()) {
             String mapper = ConsoleUtils.readLine("请输入您的Mapper包名[mapper]: ");
+            if (mapper.isEmpty()) mapper = null;
             packageConfig.setMapper(mapper);
         }
         if (null == packageConfig.getService()) {
             String service = ConsoleUtils.readLine("请输入您的Service包名[当框架需要时默认为service]: ");
+            if (service.isEmpty()) service = null;
             packageConfig.setService(service);
         }
         if (null == packageConfig.getServiceImpl()) {
             String serviceImpl = ConsoleUtils.readLine("请输入您的ServiceImpl包名[当框架需要时默认为service.impl]: ");
+            if (serviceImpl.isEmpty()) serviceImpl = null;
             packageConfig.setServiceImpl(serviceImpl);
         }
         if (null == packageConfig.getController()) {
             String controller = ConsoleUtils.readLine("请输入您的Controller包名[默认不生成控制器]: ");
+            if (controller.isEmpty()) controller = null;
             packageConfig.setController(controller);
         }
     }
