@@ -13,6 +13,8 @@ import org.framegen.util.ConsoleUtils;
 import org.framegen.util.StrUtil;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -56,7 +58,7 @@ public class FrameGenCLI {
             if (!selected.isEmpty()) {
                 // 过滤出选择的表格
                 tables = tables.stream()
-                        .filter(t -> selected.contains(tableNames.indexOf(t.getTableName())))
+                        .filter(t -> selected.contains(tableNames.indexOf(t.getTableName()) + 1))
                         .collect(Collectors.toList());
             }
 
