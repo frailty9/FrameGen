@@ -2,6 +2,7 @@ package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
+import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.db.Query;
@@ -43,8 +44,9 @@ public class FrameGenCLI {
             DataSourceHolder.changeDataSource(dataSourceNames.get(selected - 1));
         }
 
-        // === 选择表格 ===
         try (Query query = new Query()) {
+            // === 选择表格 ===
+
             // 获取所有表格信息
             List<Table> tables = query.getTables();
             // 取得表格名称
@@ -87,6 +89,12 @@ public class FrameGenCLI {
                 }
                 // 格式调整并设置到字符串工具的static变量中
                 StrUtil.setTableNamePrefix(tablePrefix);
+            }
+
+            // === 选择编程语言 ===
+            boolean isKotlin = ConsoleUtils.readYesNo("是否使用Kotlin", false);
+            if (isKotlin) {
+                GlobalConfigHolder.enableKotlin = true;
             }
 
             // === 选择输出目标 ===
