@@ -192,6 +192,11 @@ public class ConsoleUtils {
         Set<Integer> excluded = new LinkedHashSet<>();
 
         String[] parts = input.split("[,，\\s]+");
+
+        if (1 == parts.length && "0".equals(parts[0])) {
+            return Collections.emptySet();
+        }
+
         for (String part : parts) {
             if (part.equalsIgnoreCase("all") || part.equalsIgnoreCase("a")) {
                 break;
