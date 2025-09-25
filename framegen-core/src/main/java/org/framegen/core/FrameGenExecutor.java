@@ -7,8 +7,12 @@ import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.NamingSuffixConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
-import org.framegen.core.generator.*;
 import org.framegen.core.entity.Table;
+import org.framegen.core.generator.EntityGenerator;
+import org.framegen.core.generator.MapperGenerator;
+import org.framegen.core.generator.MapperXmlGenerator;
+import org.framegen.core.generator.ServiceGenerator;
+import org.framegen.core.generator.ServiceImplGenerator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,7 +27,8 @@ public class FrameGenExecutor {
     protected Path codePath;
     protected Path resourcePath;
 
-    public FrameGenExecutor(PackageConfig packageConfig, NamingSuffixConfig namingSuffixConfig, FrameworkConfig frameworkConfig, Path outRootPath) {
+    public FrameGenExecutor(PackageConfig packageConfig, NamingSuffixConfig namingSuffixConfig,
+            FrameworkConfig frameworkConfig, Path outRootPath) {
         this.packageConfig = packageConfig;
         this.frameworkConfig = frameworkConfig;
         this.namingSuffixConfig = namingSuffixConfig;
@@ -72,27 +77,32 @@ public class FrameGenExecutor {
     }
 
     protected void createEntity(Table table) throws IOException, TemplateException {
-        EntityGenerator entityGenerator = new EntityGenerator(packageConfig, namingSuffixConfig.getEntity(), frameworkConfig, codePath, table);
+        EntityGenerator entityGenerator = new EntityGenerator(packageConfig, namingSuffixConfig.getEntity(),
+                frameworkConfig, codePath, table);
         entityGenerator.generate();
     }
 
     protected void createMapper(Table table) throws IOException, TemplateException {
-        MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, namingSuffixConfig.getPersistence(), frameworkConfig, codePath, table);
+        MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, namingSuffixConfig.getPersistence(),
+                frameworkConfig, codePath, table);
         mapperGenerator.generate();
     }
 
     protected void createMapperXml(Table table) throws IOException, TemplateException {
-        MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig, namingSuffixConfig.getPersistence(), frameworkConfig, resourcePath, table);
+        MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig,
+                namingSuffixConfig.getPersistence(), frameworkConfig, resourcePath, table);
         mapperXmlGenerator.generate();
     }
 
     protected void createService(Table table) throws IOException, TemplateException {
-        ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, namingSuffixConfig.getService(), frameworkConfig, codePath, table);
+        ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, namingSuffixConfig.getService(),
+                frameworkConfig, codePath, table);
         serviceGenerator.generate();
     }
 
     protected void createServiceImpl(Table table) throws IOException, TemplateException {
-        ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig, namingSuffixConfig.getServiceImpl(), frameworkConfig, codePath, table);
+        ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig,
+                namingSuffixConfig.getServiceImpl(), frameworkConfig, codePath, table);
         serviceImplGenerator.generate();
     }
 }

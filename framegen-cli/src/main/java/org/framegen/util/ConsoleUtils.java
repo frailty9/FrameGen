@@ -1,6 +1,10 @@
 package org.framegen.util;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 
 /**
  * 原生控制台工具类（兼容 Java 8，无需 JLine）

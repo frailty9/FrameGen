@@ -1,7 +1,6 @@
 package org.framegen.core.generator;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
@@ -10,7 +9,9 @@ import org.framegen.core.entity.Table;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 public class EntityGenerator extends AbstractGenerator<Collection<Column>> {

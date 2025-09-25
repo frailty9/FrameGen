@@ -2,7 +2,6 @@ package org.framegen.core.generator;
 
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.entity.Table;
@@ -10,7 +9,9 @@ import org.framegen.core.entity.Table;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 @Slf4j
 public class MapperXmlGenerator extends AbstractGenerator<Properties> {

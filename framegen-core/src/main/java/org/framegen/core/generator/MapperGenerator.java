@@ -1,7 +1,6 @@
 package org.framegen.core.generator;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
@@ -9,7 +8,9 @@ import org.framegen.core.entity.Table;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 @Slf4j
 public class MapperGenerator extends AbstractGenerator<Properties> {

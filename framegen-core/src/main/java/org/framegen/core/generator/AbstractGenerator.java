@@ -34,7 +34,8 @@ public abstract class AbstractGenerator<E> {
     // 类名后缀
     protected final String classNameSuffix;
 
-    public AbstractGenerator(String baseTemplateName, String classNameSuffix, FrameworkConfig frameworkConfig, Path codePath, Table table, PackageConfig packageConfig)
+    public AbstractGenerator(String baseTemplateName, String classNameSuffix, FrameworkConfig frameworkConfig,
+            Path codePath, Table table, PackageConfig packageConfig)
             throws IOException {
         // 拼接模板文件名
         StringBuilder templateName = new StringBuilder().append(baseTemplateName);

@@ -1,8 +1,13 @@
 package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
-import org.framegen.config.*;
 import org.framegen.core.service.DataSourceHolder;
+import org.framegen.config.AppFrameworkEnum;
+import org.framegen.config.FrameworkConfig;
+import org.framegen.config.GlobalConfigHolder;
+import org.framegen.config.JdbcConfig;
+import org.framegen.config.NamingSuffixConfig;
+import org.framegen.config.PackageConfig;
 import org.framegen.core.db.Query;
 import org.framegen.core.db.impl.HikariDataSourceGetter;
 import org.framegen.core.file.FileUtil;
@@ -39,7 +44,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     public AbstractEntry(JdbcConfig jdbcConfig) {
         DataSourceHolder.setDataSource(new HikariDataSourceGetter(jdbcConfig).getDataSource());
     }
-    
+
     // 传入连接配置的构造方法(Consumer构建)
     public AbstractEntry(Consumer<JdbcConfig.Builder> consumer) {
         JdbcConfig.Builder builder = JdbcConfig.builder();
@@ -58,7 +63,8 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         DataSourceHolder.changeDataSource(dataSourceName);
 
         switch (appFramework) {
-            case NONE: break;
+            case NONE:
+                break;
             case SPRING_BOOT:
                 this.frameworkConfig.setEnableSpring(true);
                 break;
@@ -190,8 +196,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             // 判断是否启用移除前缀, 但值为空(表示自动)
             if ("".equals(StrUtil.getTableNamePrefix())) {
                 String prefix = StrUtil.getCommonPrefix(
-                        tables.stream().map(Table::getTableName).collect(Collectors.toList())
-                );
+                        tables.stream().map(Table::getTableName).collect(Collectors.toList()));
                 StrUtil.setTableNamePrefix(prefix);
             }
 
