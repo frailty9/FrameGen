@@ -1,13 +1,10 @@
 package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
-import org.framegen.config.FrameworkConfig;
-import org.framegen.config.GlobalConfigHolder;
-import org.framegen.config.PackageConfig;
+import org.framegen.config.*;
 import org.framegen.core.service.DataSourceHolder;
 import org.framegen.core.db.Query;
 import org.framegen.core.db.impl.HikariDataSourceGetter;
-import org.framegen.config.JdbcConfig;
 import org.framegen.core.file.FileUtil;
 import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
@@ -47,9 +44,19 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         DataSourceHolder.setDataSource(dataSource);
     }
 
-    public AbstractEntry(Map<String, DataSource> dataSourceMap, String dataSourceName) {
+    public AbstractEntry(Map<String, DataSource> dataSourceMap, String dataSourceName, AppFrameworkEnum appFramework) {
         DataSourceHolder.setDataSourceMap(dataSourceMap);
         DataSourceHolder.changeDataSource(dataSourceName);
+
+        switch (appFramework) {
+            case NONE: break;
+            case SPRING_BOOT:
+                this.frameworkConfig.setEnableSpring(true);
+                break;
+            case SOLON:
+                this.frameworkConfig.setEnableSolon(true);
+                break;
+        }
     }
 
     public abstract T self();
