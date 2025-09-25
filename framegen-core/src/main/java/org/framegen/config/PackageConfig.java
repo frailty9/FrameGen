@@ -2,11 +2,13 @@ package org.framegen.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 生成器输出包配置类
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class PackageConfig {
 

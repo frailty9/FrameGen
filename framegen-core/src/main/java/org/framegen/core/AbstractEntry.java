@@ -31,7 +31,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected Collection<String> includes = new ArrayList<>();
     protected Collection<String> excludes = new ArrayList<>();
     protected String outModuleName = "";
-    protected PackageConfig packageConfig = PackageConfig.builder().build();
+    protected PackageConfig packageConfig = new PackageConfig();
     protected FrameworkConfig frameworkConfig = new FrameworkConfig();
 
     // 传入连接配置的构造方法
