@@ -3,7 +3,7 @@ package org.framegen.spring.generator;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.generator.ServiceImplGenerator;
-import org.framegen.core.model.Table;
+import org.framegen.core.entity.Table;
 
 import java.io.IOException;
 import java.nio.file.Path;

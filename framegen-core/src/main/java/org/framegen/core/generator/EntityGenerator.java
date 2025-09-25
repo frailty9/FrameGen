@@ -5,18 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
-import org.framegen.core.model.Column;
-import org.framegen.core.model.Table;
+import org.framegen.core.entity.Column;
+import org.framegen.core.entity.Table;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
 @Slf4j
-public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
+public class EntityGenerator extends AbstractGenerator<Collection<Column>> {
 
-    public ModelGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
-        super("model", "", frameworkConfig, codePath, table, packageConfig);
+    public EntityGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
+        super("entity", "", frameworkConfig, codePath, table, packageConfig);
     }
 
     @Override
@@ -82,9 +82,9 @@ public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
     @Override
     protected String getPackagePath() {
         if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + packageConfig.getModel();
+            return packageConfig.getOrigin() + "." + packageConfig.getEntity();
         } else {
-            return packageConfig.getModel();
+            return packageConfig.getEntity();
         }
     }
 

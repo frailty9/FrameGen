@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
-import org.framegen.core.model.Table;
+import org.framegen.core.entity.Table;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,7 +29,7 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
             imports.add("com.baomidou.mybatisplus.extension.service.impl.ServiceImpl");
             imports.add(getFullPackage(PackageConfig::getMapper) + "." + table.getPascalCaseName()
                     + "Mapper");
-            imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
+            imports.add(getFullPackage(PackageConfig::getEntity) + "." + table.getPascalCaseName());
             imports.add(getFullPackage(PackageConfig::getService) + "." + table.getPascalCaseName()
                     + "Service");
         }
@@ -66,7 +66,7 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
     protected Properties getMoreData() {
         Properties data = new Properties();
         data.setProperty("frameworkName", frameworkConfig.repositoryFramework.name());
-        data.setProperty("modelClassName", table.getPascalCaseName());
+        data.setProperty("entityClassName", table.getPascalCaseName());
         data.setProperty("mapperClassName", table.getPascalCaseName() + "Mapper");
         data.setProperty("interfaceName", table.getPascalCaseName() + "Service");
         return data;

@@ -13,7 +13,7 @@ public class PackageConfig {
     // 公共前缀包名
     private String origin;
     // 模型包名
-    private String model;
+    private String entity;
     // 数据层包名
     private String mapper;
     // 服务层包名
@@ -29,7 +29,7 @@ public class PackageConfig {
 
     public static class Builder {
         private String origin;
-        private String model;
+        private String entity;
         private String mapper;
         private String service;
         private String serviceImpl;
@@ -40,8 +40,8 @@ public class PackageConfig {
             return this;
         }
 
-        public Builder model(String model) {
-            this.model = model;
+        public Builder entity(String entity) {
+            this.entity = entity;
             return this;
         }
 
@@ -66,13 +66,13 @@ public class PackageConfig {
         }
 
         public PackageConfig build() {
-            return new PackageConfig(origin, model, mapper, service, serviceImpl, controller);
+            return new PackageConfig(origin, entity, mapper, service, serviceImpl, controller);
         }
     }
 
     public void applyDefault(FrameworkConfig frameworkConfig) {
-        if (null == model) {
-            model = "model";
+        if (null == entity) {
+            entity = "entity";
         }
         if (null == mapper && (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
                 || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS)) {

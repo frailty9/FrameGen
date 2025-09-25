@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.framegen.core.service.DataSourceHolder;
 import org.framegen.core.db.converter.AbstractTypeConverter;
 import org.framegen.core.db.converter.ConverterFactory;
-import org.framegen.core.model.Column;
+import org.framegen.core.entity.Column;
 import org.framegen.core.db.sql.AbstractSqlProvider;
 import org.framegen.core.db.sql.SqlProviderFactory;
-import org.framegen.core.model.Table;
+import org.framegen.core.entity.Table;
 import org.framegen.util.StrUtil;
 
 import java.sql.*;

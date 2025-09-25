@@ -35,7 +35,7 @@ public class FrameGenExample {
             // 设置生成的包路径
             .setPackage(builder -> {
                 builder.origin("org.framegen.example")  // 起始路径
-                        .model("model") // 实体类路径
+                        .entity("entity") // 实体类路径
                         .mapper("dso.mapper") // Mapper接口路径
                         .service("dso.service") // Service接口路径
                 ;

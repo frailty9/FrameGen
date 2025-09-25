@@ -7,7 +7,7 @@ import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.generator.*;
-import org.framegen.core.model.Table;
+import org.framegen.core.entity.Table;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -42,8 +42,8 @@ public class FrameGenExecutor {
             for (Table table : tables) {
                 log.info("FrameGen: 正在生成表: {}", table.getTableName());
 
-                // 生成Model
-                createModel(table);
+                // 生成Entity
+                createEntity(table);
                 // 生成数据层
                 if (null != packageConfig.getMapper()) {
                     createMapper(table);
@@ -68,9 +68,9 @@ public class FrameGenExecutor {
         }
     }
 
-    protected void createModel(Table table) throws IOException, TemplateException {
-        ModelGenerator modelGenerator = new ModelGenerator(packageConfig, frameworkConfig, codePath, table);
-        modelGenerator.generate();
+    protected void createEntity(Table table) throws IOException, TemplateException {
+        EntityGenerator entityGenerator = new EntityGenerator(packageConfig, frameworkConfig, codePath, table);
+        entityGenerator.generate();
     }
 
     protected void createMapper(Table table) throws IOException, TemplateException {

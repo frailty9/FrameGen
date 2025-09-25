@@ -7,7 +7,7 @@ import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.db.Query;
 import org.framegen.core.file.FileUtil;
-import org.framegen.core.model.Table;
+import org.framegen.core.entity.Table;
 import org.framegen.core.service.DataSourceHolder;
 import org.framegen.util.ConsoleStyle;
 import org.framegen.util.ConsoleUtils;
@@ -191,10 +191,10 @@ public class FrameGenCLI {
             if (origin.isEmpty()) origin = null;
             packageConfig.setOrigin(origin);
         }
-        if (null == packageConfig.getModel()) {
-            String model = ConsoleUtils.readLine("请输入您的Model包名[model]: ");
-            if (model.isEmpty()) model = null;
-            packageConfig.setModel(model);
+        if (null == packageConfig.getEntity()) {
+            String entity = ConsoleUtils.readLine("请输入您的Entity包名[entity]: ");
+            if (entity.isEmpty()) entity = null;
+            packageConfig.setEntity(entity);
         }
         if (null == packageConfig.getMapper()) {
             String mapper = ConsoleUtils.readLine("请输入您的Mapper包名[mapper]: ");

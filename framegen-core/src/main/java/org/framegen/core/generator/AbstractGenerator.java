@@ -12,7 +12,7 @@ import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.generator.props.GeneratorProps;
-import org.framegen.core.model.Table;
+import org.framegen.core.entity.Table;
 import org.framegen.util.StrUtil;
 
 import freemarker.template.Configuration;
@@ -105,14 +105,14 @@ public abstract class AbstractGenerator<E> {
     // 整理数据并准备输出
     public void generate() throws TemplateException, IOException {
 
-        Path modelDirPath = codePath.resolve(
+        Path entityDirPath = codePath.resolve(
                 getPackagePath().replace(".", File.separator));
 
         // 创建输出目录
-        if (!modelDirPath.toFile().exists())
-            modelDirPath.toFile().mkdirs();
+        if (!entityDirPath.toFile().exists())
+            entityDirPath.toFile().mkdirs();
         // 输出的文件路径
-        Path modelFilePath = modelDirPath.resolve(getClassName() +
+        Path entityFilePath = entityDirPath.resolve(getClassName() +
                 (GlobalConfigHolder.enableKotlin ? ".kt" : ".java"));
 
         // 整理数据
@@ -124,6 +124,6 @@ public abstract class AbstractGenerator<E> {
                 .className(getClassName())
                 .data(getMoreData());
 
-        this.write(dataBuilder.build(), modelFilePath.toFile());
+        this.write(dataBuilder.build(), entityFilePath.toFile());
     }
 }

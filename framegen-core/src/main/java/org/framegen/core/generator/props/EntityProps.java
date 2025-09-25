@@ -2,14 +2,14 @@ package org.framegen.core.generator.props;
 
 import lombok.Builder;
 import lombok.Data;
-import org.framegen.core.model.Column;
+import org.framegen.core.entity.Column;
 
 import java.util.Collection;
 
 @Deprecated
 @Data
 @Builder
-public class ModelProps {
+public class EntityProps {
 
     private String packagePath;
     private Collection<String> imports;

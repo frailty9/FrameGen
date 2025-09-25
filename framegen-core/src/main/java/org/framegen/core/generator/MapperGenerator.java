@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
-import org.framegen.core.model.Table;
+import org.framegen.core.entity.Table;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,7 +28,7 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
         }
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
-            imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
+            imports.add(getFullPackage(PackageConfig::getEntity) + "." + table.getPascalCaseName());
         }
         if (frameworkConfig.isEnableSpring()) {
             imports.add("org.springframework.stereotype.Repository");
@@ -61,7 +61,7 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
     protected Properties getMoreData() {
         Properties data = new Properties();
         data.setProperty("frameworkName", frameworkConfig.repositoryFramework.name());
-        data.setProperty("modelClassName", table.getPascalCaseName());
+        data.setProperty("entityClassName", table.getPascalCaseName());
         return data;
     }
 }

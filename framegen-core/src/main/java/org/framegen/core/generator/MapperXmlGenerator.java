@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
-import org.framegen.core.model.Table;
+import org.framegen.core.entity.Table;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,18 +37,18 @@ public class MapperXmlGenerator extends AbstractGenerator<Properties> {
     @Override
     public void generate() throws TemplateException, IOException {
 
-        Path modelDirPath = codePath.resolve(
+        Path entityDirPath = codePath.resolve(
                 getPackagePath().replace(".", File.separator));
 
         // 创建输出目录
-        if (!modelDirPath.toFile().exists())
-            modelDirPath.toFile().mkdirs();
+        if (!entityDirPath.toFile().exists())
+            entityDirPath.toFile().mkdirs();
         // 输出的文件路径
-        Path modelFilePath = modelDirPath.resolve(getClassName() + ".xml");
+        Path entityFilePath = entityDirPath.resolve(getClassName() + ".xml");
 
         Properties data = new Properties();
         data.setProperty("mapperClassPath", getPackagePath() + "." + getClassName());
 
-        this.write(data, modelFilePath.toFile());
+        this.write(data, entityFilePath.toFile());
     }
 }

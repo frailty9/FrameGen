@@ -17,6 +17,6 @@ public class ${className} {
 <#elseif data.frameworkName == "MYBATIS">
 public interface ${className} {
 <#elseif data.frameworkName == "MYBATIS_PLUS">
-public interface ${className} extends BaseMapper<${data.modelClassName}> {
+public interface ${className} extends BaseMapper<${data.entityClassName}> {
 </#if>
 }
