@@ -38,6 +38,14 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     public AbstractEntry(JdbcConfig jdbcConfig) {
         DataSourceHolder.setDataSource(new HikariDataSourceGetter(jdbcConfig).getDataSource());
     }
+    
+    // 传入连接配置的构造方法(Consumer构建)
+    public AbstractEntry(Consumer<JdbcConfig.Builder> consumer) {
+        JdbcConfig.Builder builder = JdbcConfig.builder();
+        consumer.accept(builder);
+        JdbcConfig jdbcConfig = builder.build();
+        DataSourceHolder.setDataSource(new HikariDataSourceGetter(jdbcConfig).getDataSource());
+    }
 
     // 传入数据源的构造方法
     public AbstractEntry(DataSource dataSource) {
