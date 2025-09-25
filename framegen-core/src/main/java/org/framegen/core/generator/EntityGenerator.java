@@ -15,8 +15,8 @@ import java.util.*;
 @Slf4j
 public class EntityGenerator extends AbstractGenerator<Collection<Column>> {
 
-    public EntityGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
-        super("entity", "", frameworkConfig, codePath, table, packageConfig);
+    public EntityGenerator(PackageConfig packageConfig, String classNameSuffix, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
+        super("entity", classNameSuffix, frameworkConfig, codePath, table, packageConfig);
     }
 
     @Override

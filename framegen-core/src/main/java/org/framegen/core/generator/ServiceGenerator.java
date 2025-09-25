@@ -16,8 +16,8 @@ import java.util.Properties;
 @Slf4j
 public class ServiceGenerator extends AbstractGenerator<Properties> {
 
-    public ServiceGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
-        super("service", "Service", frameworkConfig, codePath, table, packageConfig);
+    public ServiceGenerator(PackageConfig packageConfig, String classNameSuffix, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
+        super("service", classNameSuffix, frameworkConfig, codePath, table, packageConfig);
     }
 
     @Override

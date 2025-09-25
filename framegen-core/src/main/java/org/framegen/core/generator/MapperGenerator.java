@@ -14,8 +14,8 @@ import java.util.*;
 @Slf4j
 public class MapperGenerator extends AbstractGenerator<Properties> {
 
-    public MapperGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
-        super("mapper", "Mapper", frameworkConfig, codePath, table, packageConfig);
+    public MapperGenerator(PackageConfig packageConfig, String classNameSuffix, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
+        super("mapper", classNameSuffix, frameworkConfig, codePath, table, packageConfig);
     }
 
     @Override

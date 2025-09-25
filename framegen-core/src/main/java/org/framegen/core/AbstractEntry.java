@@ -32,6 +32,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected Collection<String> excludes = new ArrayList<>();
     protected String outModuleName = "";
     protected PackageConfig packageConfig = new PackageConfig();
+    protected NamingSuffixConfig namingSuffixConfig = new NamingSuffixConfig();
     protected FrameworkConfig frameworkConfig = new FrameworkConfig();
 
     // 传入连接配置的构造方法
@@ -128,6 +129,13 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         return self();
     }
 
+    public T setNamingSuffix(Consumer<NamingSuffixConfig.Builder> consumer) {
+        NamingSuffixConfig.Builder builder = NamingSuffixConfig.builder();
+        consumer.accept(builder);
+        this.namingSuffixConfig = builder.build();
+        return self();
+    }
+
     public T removeHeader(String str) {
         StrUtil.setTableNamePrefix(str);
         return self();
@@ -143,8 +151,8 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected FrameGenExecutor getExecutor(Path outRootPath) {
         try {
             Constructor<? extends FrameGenExecutor> ctor = getExecutorClass().getDeclaredConstructor(
-                    PackageConfig.class, FrameworkConfig.class, Path.class);
-            return ctor.newInstance(packageConfig, frameworkConfig, outRootPath);
+                    PackageConfig.class, NamingSuffixConfig.class, FrameworkConfig.class, Path.class);
+            return ctor.newInstance(packageConfig, namingSuffixConfig, frameworkConfig, outRootPath);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create executor: " + getExecutorClass(), e);
         }

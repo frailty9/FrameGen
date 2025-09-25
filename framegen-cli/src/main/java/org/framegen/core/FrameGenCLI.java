@@ -1,8 +1,10 @@
 package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
+import org.framegen.config.NamingSuffixConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.db.Query;
@@ -12,10 +14,12 @@ import org.framegen.core.service.DataSourceHolder;
 import org.framegen.util.ConsoleStyle;
 import org.framegen.util.ConsoleUtils;
 import org.framegen.util.StrUtil;
+import org.framegen.util.StringSetter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -139,6 +143,9 @@ public class FrameGenCLI {
             // 应用默认缺省值
             executor.packageConfig.applyDefault(executor.frameworkConfig);
 
+            // === 配置类名后缀 ===
+            setNamingSuffix(executor.namingSuffixConfig);
+
             // === 开始生成 ===
             // 展示信息
             ConsoleUtils.print("生成表格: ");
@@ -238,5 +245,33 @@ public class FrameGenCLI {
                 return;
             }
         }
+    }
+
+    private void setNamingSuffix(NamingSuffixConfig nsConfig) {
+        // 菜单
+            List<String> menu2 = Arrays.asList(
+                    "实体类后缀[" + nsConfig.getEntity() + "]",
+                    "持久层类后缀[" + nsConfig.getPersistence() + "]",
+                    "服务层接口类后缀[" + nsConfig.getService() + "]",
+                    "服务层实现类后缀[" + nsConfig.getServiceImpl() + "]",
+                    "控制器层类后缀[" + nsConfig.getController() + "]");
+            // 控制菜单
+            List<StringSetter> actions = Arrays.asList(
+                    nsConfig::setEntity,
+                    nsConfig::setPersistence,
+                    nsConfig::setService,
+                    nsConfig::setServiceImpl,
+                    nsConfig::setController);
+
+            Set<Integer> selected2 = ConsoleUtils.selectMultiple("是否需要自定义类名后缀, 请选择需要修改的项, 输入0跳过修改", menu2);
+
+            if (!selected2.isEmpty()) {
+                for (int i : selected2) {
+                    String input = ConsoleUtils.readLine("请输入新的" + menu2.get(i - 1) + ": ");
+                    if (!input.isEmpty()) {
+                        actions.get(i - 1).set(input);;
+                    }
+                }
+            }
     }
 }
