@@ -8,7 +8,6 @@ import org.framegen.core.db.sql.SqlProviderFactory;
 import org.framegen.core.entity.Column;
 import org.framegen.core.entity.Table;
 import org.framegen.core.service.DataSourceHolder;
-import org.framegen.util.StrUtil;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -67,7 +66,7 @@ public class Query implements AutoCloseable {
                 String codeDataType = this.typeConverter.converterToCodeType(dbDataType);
 
                 columns.add(Column.builder()
-                        .fieldName(StrUtil.toCamelCase(rs.getString("field_name")))
+                        .fieldName(rs.getString("field_name"))
                         .defaultValue(rs.getString("default_value"))
                         .isNullable("YES".equals(rs.getString("is_nullable")))
                         .dataType(codeDataType)

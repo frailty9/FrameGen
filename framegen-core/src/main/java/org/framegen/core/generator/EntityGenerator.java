@@ -6,12 +6,14 @@ import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.entity.Column;
 import org.framegen.core.entity.Table;
+import org.framegen.util.StrUtil;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class EntityGenerator extends AbstractGenerator<Collection<Column>> {
@@ -91,6 +93,8 @@ public class EntityGenerator extends AbstractGenerator<Collection<Column>> {
 
     @Override
     protected Collection<Column> getMoreData() {
-        return table.getColumns();
+        return table.getColumns().stream().peek(t -> {
+            t.setFieldName(StrUtil.toCamelCase(t.getFieldName()));
+        }).collect(Collectors.toList());
     }
 }
