@@ -84,11 +84,7 @@ public class EntityGenerator extends AbstractGenerator<Collection<Column>> {
 
     @Override
     protected String getPackagePath() {
-        if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + packageConfig.getEntity();
-        } else {
-            return packageConfig.getEntity();
-        }
+        return getFullPackage(PackageConfig::getEntity);
     }
 
     @Override

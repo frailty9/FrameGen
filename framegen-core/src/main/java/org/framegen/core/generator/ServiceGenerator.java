@@ -39,11 +39,7 @@ public class ServiceGenerator extends AbstractGenerator<Properties> {
 
     @Override
     protected String getPackagePath() {
-        if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + packageConfig.getService();
-        } else {
-            return packageConfig.getService();
-        }
+        return getFullPackage(PackageConfig::getService);
     }
 
     @Override
