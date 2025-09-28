@@ -89,8 +89,6 @@ public class EntityGenerator extends AbstractGenerator<Collection<Column>> {
 
     @Override
     protected Collection<Column> getMoreData() {
-        return table.getColumns().stream().peek(t -> {
-            t.setFieldName(StrUtil.toCamelCase(t.getFieldName()));
-        }).collect(Collectors.toList());
+        return table.getColumns();
     }
 }
