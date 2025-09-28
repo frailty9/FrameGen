@@ -6,14 +6,12 @@ import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.entity.Column;
 import org.framegen.core.entity.Table;
-import org.framegen.util.StrUtil;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class EntityGenerator extends AbstractGenerator<Collection<Column>> {
@@ -53,7 +51,7 @@ public class EntityGenerator extends AbstractGenerator<Collection<Column>> {
                 }
             }
         });
-        if (GlobalConfigHolder.enableLombok) {
+        if (GlobalConfigHolder.enableLombok && !GlobalConfigHolder.enableKotlin) {
             imports.add("lombok.Data");
             imports.add("lombok.Builder");
         }
@@ -75,7 +73,7 @@ public class EntityGenerator extends AbstractGenerator<Collection<Column>> {
     @Override
     protected List<String> getAnnotations() {
         List<String> annotations = new ArrayList<>();
-        if (GlobalConfigHolder.enableLombok) {
+        if (GlobalConfigHolder.enableLombok && !GlobalConfigHolder.enableKotlin) {
             annotations.add("Data");
             annotations.add("Builder");
         }
