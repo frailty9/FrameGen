@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public final class NamingSuffixConfig {
     
     @Default
-    private String entity = "Entity";
+    private String entity = "";
     @Default
     private String persistence = "Persistence";
     @Default
