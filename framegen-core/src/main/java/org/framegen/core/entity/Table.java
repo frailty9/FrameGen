@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.framegen.util.StrUtil;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -29,5 +30,11 @@ public class Table {
 
     public String getPascalCaseName() {
         return StrUtil.toPascalCase(tableName);
+    }
+
+    public Column getPrimaryColumn() {
+        return columns.stream()
+               .filter(column -> column.getColumnKey().contains("PRI"))
+                .collect(Collectors.toList()).get(0);
     }
 }
