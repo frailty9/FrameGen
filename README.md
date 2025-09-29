@@ -34,8 +34,8 @@ public class FrameGenExample {
             .outModule("framegen-example-corejava")
             // 设置生成的包路径
             .setPackage(builder -> {
-                builder.origin("org.framegen.example")  // 起始路径
-                        .entity("entity") // 实体类路径
+                builder.root("org.framegen.example")  // 起始路径
+                        .model("model") // 实体类路径
                         .mapper("dso.mapper") // Mapper接口路径
                         .service("dso.service") // Service接口路径
                 ;
@@ -59,7 +59,7 @@ public class SolonExample {
         // 通过传入上下文进行初始化, 同时可指定数据源名称, 若未指定则默认使用第一个
         new FrameGenSolonEntry(solonApp.context(), "data")
                 .setPackage(builder -> {
-                    builder.origin("org.framegen.example.solon");
+                    builder.root("org.framegen.example.solon");
                 })
                 .includes("user")
                 .mybatisPlus()
@@ -79,7 +79,7 @@ public class SpringBoot3 {
         // 通过传入上下文进行初始化, 同时可指定数据源名称, 若未指定则默认使用第一个
         new FrameGenSpringBootEntry(context)
                 .setPackage(builder -> {
-                    builder.origin("springboot");
+                    builder.root("springboot");
                 })
                 .excludes("user")
                 .lombok()

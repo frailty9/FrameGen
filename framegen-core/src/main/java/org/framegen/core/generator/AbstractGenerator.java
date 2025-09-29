@@ -12,7 +12,7 @@ import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.generator.props.GeneratorProps;
-import org.framegen.core.entity.Table;
+import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
 
 import freemarker.template.Configuration;
@@ -65,8 +65,8 @@ public abstract class AbstractGenerator<E> {
      * @return 完整包路径
      */
     protected String getFullPackage(Function<PackageConfig, String> function) {
-        if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + function.apply(packageConfig);
+        if (null != packageConfig.getRoot() && !packageConfig.getRoot().isEmpty()) {
+            return packageConfig.getRoot() + "." + function.apply(packageConfig);
         } else {
             return function.apply(packageConfig);
         }
@@ -106,14 +106,14 @@ public abstract class AbstractGenerator<E> {
     // 整理数据并准备输出
     public void generate() throws TemplateException, IOException {
 
-        Path entityDirPath = codePath.resolve(
+        Path modelDirPath = codePath.resolve(
                 getPackagePath().replace(".", File.separator));
 
         // 创建输出目录
-        if (!entityDirPath.toFile().exists())
-            entityDirPath.toFile().mkdirs();
+        if (!modelDirPath.toFile().exists())
+            modelDirPath.toFile().mkdirs();
         // 输出的文件路径
-        Path entityFilePath = entityDirPath.resolve(getClassName() +
+        Path modelFilePath = modelDirPath.resolve(getClassName() +
                 (GlobalConfigHolder.enableKotlin ? ".kt" : ".java"));
 
         // 整理数据
@@ -125,6 +125,6 @@ public abstract class AbstractGenerator<E> {
                 .className(getClassName())
                 .data(getMoreData());
 
-        this.write(dataBuilder.build(), entityFilePath.toFile());
+        this.write(dataBuilder.build(), modelFilePath.toFile());
     }
 }

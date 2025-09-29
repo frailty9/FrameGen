@@ -4,8 +4,8 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
-import org.framegen.core.entity.Column;
-import org.framegen.core.entity.Table;
+import org.framegen.core.model.Column;
+import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
 
 import java.io.File;
@@ -36,34 +36,34 @@ public class MapperXmlGenerator extends AbstractGenerator<Map<String, Object>> {
 
     @Override
     protected String getPackagePath() {
-        return getFullPackage(PackageConfig::getMapper);
+        return getFullPackage(PackageConfig::getDao);
     }
 
     @Override
     public void generate() throws TemplateException, IOException {
 
-        Path entityDirPath = codePath.resolve(
+        Path modelDirPath = codePath.resolve(
                 getPackagePath().replace(".", File.separator));
 
         // 创建输出目录
-        if (!entityDirPath.toFile().exists())
-            entityDirPath.toFile().mkdirs();
+        if (!modelDirPath.toFile().exists())
+            modelDirPath.toFile().mkdirs();
         // 输出的文件路径
-        Path entityFilePath = entityDirPath.resolve(getClassName() + ".xml");
+        Path modelFilePath = modelDirPath.resolve(getClassName() + ".xml");
 
         Column primaryColumn = table.getPrimaryColumn();
 
         Map<String, Object> data = new HashMap<>();
         data.put("mapperClassPath", getPackagePath() + "." + getClassName());
-        data.put("entityClassPath", getFullPackage(PackageConfig::getEntity) +
+        data.put("modelClassPath", getFullPackage(PackageConfig::getModel) +
                 "." + StrUtil.removePrefix(table.getPascalCaseName()));
         data.put("tableName", table.getTableName());
         data.put("fields", table.getColumns().stream().map(Column::getFieldName).collect(Collectors.toList()));
-        data.put("entityFieldJNames", table.getColumns().stream().map(Column::getVariableName).collect(Collectors.toList()));
+        data.put("modelFieldJNames", table.getColumns().stream().map(Column::getVariableName).collect(Collectors.toList()));
         data.put("primaryJType", primaryColumn.getDataType());
         data.put("primaryVarName", primaryColumn.getVariableName());
         data.put("isAutoIncrement", primaryColumn.getExtra().contains("auto_increment"));
 
-        this.write(data, entityFilePath.toFile());
+        this.write(data, modelFilePath.toFile());
     }
 }

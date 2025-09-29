@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 public final class NamingSuffixConfig {
     
     @Default
-    private String entity = "";
+    private String model = "";
     @Default
-    private String persistence = "Persistence";
+    private String dao = "DAO";
     @Default
     private String service = "Service";
     @Default

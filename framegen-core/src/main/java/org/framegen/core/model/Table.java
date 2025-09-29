@@ -1,4 +1,4 @@
-package org.framegen.core.entity;
+package org.framegen.core.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

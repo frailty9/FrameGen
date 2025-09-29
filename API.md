@@ -16,7 +16,7 @@ public FrameGenExecutor(
 ```
 
 参数说明：
-- `packageConfig`: 包名配置（entity、mapper、service等）
+- `packageConfig`: 包名配置（model、mapper、service等）
 - `enableMybatis`: 是否启用MyBatis支持
 - `enableMybatisPlus`: 是否启用MyBatis-Plus支持  
 - `outRootPath`: 生成文件的根输出路径
@@ -38,7 +38,7 @@ public void execute(List<Table> tables)
 
 ```java
 PackageConfig config = PackageConfig.builder()
-    .entity("com.example.entity")
+    .model("com.example.model")
     .mapper("com.example.mapper")
     .build();
 

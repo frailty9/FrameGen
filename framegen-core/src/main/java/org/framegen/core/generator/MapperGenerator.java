@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
-import org.framegen.core.entity.Column;
-import org.framegen.core.entity.Table;
+import org.framegen.core.model.Column;
+import org.framegen.core.model.Table;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -27,7 +27,7 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
                 || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("org.apache.ibatis.annotations.Mapper");
-            imports.add(getFullPackage(PackageConfig::getEntity) + "." + table.getPascalCaseName());
+            imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
         }
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS) {
             imports.add("java.util.List");
@@ -59,7 +59,7 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
 
     @Override
     protected String getPackagePath() {
-        return getFullPackage(PackageConfig::getMapper);
+        return getFullPackage(PackageConfig::getDao);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
         Column primaryColumn = table.getPrimaryColumn();
 
         data.setProperty("frameworkName", frameworkConfig.repositoryFramework.name());
-        data.setProperty("entityClassName", table.getPascalCaseName());
+        data.setProperty("modelClassName", table.getPascalCaseName());
         data.setProperty("primaryJType", primaryColumn.getDataType());
         data.setProperty("primaryVarName", primaryColumn.getVariableName());
         return data;

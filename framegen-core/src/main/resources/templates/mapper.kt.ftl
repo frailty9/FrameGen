@@ -1,4 +1,4 @@
-<#assign entityVarName = data.entityClassName?substring(0, 1)?lower_case + data.entityClassName?substring(1)>
+<#assign modelVarName = data.modelClassName?substring(0, 1)?lower_case + data.modelClassName?substring(1)>
 package ${packagePath};
 
 <#list imports as import>
@@ -16,17 +16,17 @@ import ${import};
 <#if data.frameworkName == "MYBATIS">
 interface ${className} {
     
-    fun insert(${entityVarName}: ${data.entityClassName}): Int
+    fun insert(${modelVarName}: ${data.modelClassName}): Int
 
-    fun selectAll(): List<${data.entityClassName}>
+    fun selectAll(): List<${data.modelClassName}>
 
-    fun selectById(${data.primaryVarName}: ${data.primaryJType}): ${data.entityClassName}
+    fun selectById(${data.primaryVarName}: ${data.primaryJType}): ${data.modelClassName}
 
-    fun update(${entityVarName}: ${data.entityClassName}): Int
+    fun update(${modelVarName}: ${data.modelClassName}): Int
 
     fun deleteById(${data.primaryVarName}: ${data.primaryJType}): Int
 
 <#elseif data.frameworkName == "MYBATIS_PLUS">
-interface ${className} : BaseMapper<${data.entityClassName}> {
+interface ${className} : BaseMapper<${data.modelClassName}> {
 </#if>
 }

@@ -1,12 +1,12 @@
 <#--  
     data {
-        entityClassName,
+        modelClassName,
         primaryJType,
         primaryVarName,
         frameworkName,
     }
   -->
-<#assign entityVarName = data.entityClassName?substring(0, 1)?lower_case + data.entityClassName?substring(1)>
+<#assign modelVarName = data.modelClassName?substring(0, 1)?lower_case + data.modelClassName?substring(1)>
 package ${packagePath};
 
 <#list imports as import>
@@ -24,17 +24,17 @@ import ${import};
 <#if data.frameworkName == "MYBATIS">
 public interface ${className} {
     
-    public int insert(${data.entityClassName} ${entityVarName});
+    public int insert(${data.modelClassName} ${modelVarName});
 
-    public List<${data.entityClassName}> selectAll();
+    public List<${data.modelClassName}> selectAll();
 
-    public ${data.entityClassName} selectById(${data.primaryJType} ${data.primaryVarName});
+    public ${data.modelClassName} selectById(${data.primaryJType} ${data.primaryVarName});
 
-    public int update(${data.entityClassName} ${entityVarName});
+    public int update(${data.modelClassName} ${modelVarName});
 
     public int deleteById(${data.primaryJType} ${data.primaryVarName});
 
 <#elseif data.frameworkName == "MYBATIS_PLUS">
-public interface ${className} extends BaseMapper<${data.entityClassName}> {
+public interface ${className} extends BaseMapper<${data.modelClassName}> {
 </#if>
 }

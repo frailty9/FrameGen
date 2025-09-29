@@ -11,7 +11,7 @@ import org.framegen.config.PackageConfig;
 import org.framegen.core.db.Query;
 import org.framegen.core.db.impl.HikariDataSourceGetter;
 import org.framegen.core.file.FileUtil;
-import org.framegen.core.entity.Table;
+import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
 
 import javax.sql.DataSource;

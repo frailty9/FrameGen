@@ -128,7 +128,7 @@ public class StrUtil {
         }
 
         if (commonWords.isEmpty()) return "";
-        return rebuildWithOriginalStyle(commonWords, list.get(0), wordsList);
+        return rebuildWithRootalStyle(commonWords, list.get(0), wordsList);
     }
 
     /*
@@ -170,12 +170,12 @@ public class StrUtil {
     /*
      * 将前缀
      */
-    private static String rebuildWithOriginalStyle(List<String> words, String original, List<List<String>> originalWordsList) {
+    private static String rebuildWithRootalStyle(List<String> words, String rootal, List<List<String>> rootalWordsList) {
         // 找到第一个字符串的原始单词
-        List<String> firstWords = originalWordsList.get(0);
+        List<String> firstWords = rootalWordsList.get(0);
         int size = Math.min(words.size(), firstWords.size());
 
-        if (original.contains("_")) {
+        if (rootal.contains("_")) {
             List<String> result = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 result.add(firstWords.get(i)); // 完全保留原始拼写

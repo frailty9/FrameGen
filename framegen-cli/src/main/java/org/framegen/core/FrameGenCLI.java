@@ -9,7 +9,7 @@ import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.db.Query;
 import org.framegen.core.file.FileUtil;
-import org.framegen.core.entity.Table;
+import org.framegen.core.model.Table;
 import org.framegen.core.service.DataSourceHolder;
 import org.framegen.util.ConsoleStyle;
 import org.framegen.util.ConsoleUtils;
@@ -193,20 +193,20 @@ public class FrameGenCLI {
     }
 
     private void setCustomPackage(PackageConfig packageConfig) {
-        if (null == packageConfig.getOrigin()) {
-            String origin = ConsoleUtils.readLine("请输入您的统一的前缀包名[没有则直接回车]: ");
-            if (origin.isEmpty()) origin = null;
-            packageConfig.setOrigin(origin);
+        if (null == packageConfig.getRoot()) {
+            String root = ConsoleUtils.readLine("请输入您的统一的前缀包名[没有则直接回车]: ");
+            if (root.isEmpty()) root = null;
+            packageConfig.setRoot(root);
         }
-        if (null == packageConfig.getEntity()) {
-            String entity = ConsoleUtils.readLine("请输入您的Entity包名[entity]: ");
-            if (entity.isEmpty()) entity = null;
-            packageConfig.setEntity(entity);
+        if (null == packageConfig.getModel()) {
+            String model = ConsoleUtils.readLine("请输入您的Model包名[model]: ");
+            if (model.isEmpty()) model = null;
+            packageConfig.setModel(model);
         }
-        if (null == packageConfig.getMapper()) {
+        if (null == packageConfig.getDao()) {
             String mapper = ConsoleUtils.readLine("请输入您的Mapper包名[mapper]: ");
             if (mapper.isEmpty()) mapper = null;
-            packageConfig.setMapper(mapper);
+            packageConfig.setDao(mapper);
         }
         if (null == packageConfig.getService()) {
             String service = ConsoleUtils.readLine("请输入您的Service包名[当框架需要时默认为service]: ");
@@ -250,15 +250,15 @@ public class FrameGenCLI {
     private void setNamingSuffix(NamingSuffixConfig nsConfig) {
         // 菜单
             List<String> menu2 = Arrays.asList(
-                    "实体类后缀[" + nsConfig.getEntity() + "]",
-                    "持久层类后缀[" + nsConfig.getPersistence() + "]",
+                    "实体类后缀[" + nsConfig.getModel() + "]",
+                    "持久层类后缀[" + nsConfig.getDao() + "]",
                     "服务层接口类后缀[" + nsConfig.getService() + "]",
                     "服务层实现类后缀[" + nsConfig.getServiceImpl() + "]",
                     "控制器层类后缀[" + nsConfig.getController() + "]");
             // 控制菜单
             List<StringSetter> actions = Arrays.asList(
-                    nsConfig::setEntity,
-                    nsConfig::setPersistence,
+                    nsConfig::setModel,
+                    nsConfig::setDao,
                     nsConfig::setService,
                     nsConfig::setServiceImpl,
                     nsConfig::setController);

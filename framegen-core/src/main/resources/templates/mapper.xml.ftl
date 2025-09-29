@@ -1,10 +1,10 @@
 <#--  
     .var {
         mapperClassPath,
-        entityClassPath,
+        modelClassPath,
         tableName,
         fields,
-        entityFieldJNames,
+        modelFieldJNames,
         primaryJType,
         primaryVarName,
         isAutoIncrement,
@@ -15,34 +15,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${mapperClassPath}">
 
-    <insert id="insert" parameterType="${entityClassPath}">
+    <insert id="insert" parameterType="${modelClassPath}">
         INSERT INTO ${tableName} 
             (${fields[startIdx..]?join(", ")}) 
         VALUES 
-            (<#list entityFieldJNames[startIdx..] as field>#${field}<#if field_has_next>, </#if></#list>)
+            (<#list modelFieldJNames[startIdx..] as field>#${field}<#if field_has_next>, </#if></#list>)
     </insert>
 
-    <select id="selectAll" resultType="${entityClassPath}">
+    <select id="selectAll" resultType="${modelClassPath}">
         SELECT 
             <#list fields as field>${field}<#if field_has_next>, </#if></#list>
         FROM ${tableName}
     </select>
 
-    <select id="selectById" parameterType="${primaryJType}" resultType="${entityClassPath}">
+    <select id="selectById" parameterType="${primaryJType}" resultType="${modelClassPath}">
         SELECT 
             <#list fields as field>${field}<#if field_has_next>, </#if></#list>
         FROM ${tableName}
         WHERE ${fields[0]} = #${primaryVarName}
     </select>
 
-    <update id="update" parameterType="${entityClassPath}">
+    <update id="update" parameterType="${modelClassPath}">
         UPDATE ${tableName} 
         SET 
             <#list fields[startIdx..] as field>
             <#assign idx = field_index + startIdx>
-            ${field} = #${entityFieldJNames[idx]}<#if idx < fields?size - 1>, </#if>
+            ${field} = #${modelFieldJNames[idx]}<#if idx < fields?size - 1>, </#if>
             </#list>
-        WHERE ${fields[0]} = #${entityFieldJNames[0]}
+        WHERE ${fields[0]} = #${modelFieldJNames[0]}
     </update>
 
     <delete id="deleteById" parameterType="${primaryJType}">

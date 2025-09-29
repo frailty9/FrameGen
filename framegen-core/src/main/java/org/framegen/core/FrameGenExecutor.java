@@ -6,9 +6,9 @@ import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.NamingSuffixConfig;
 import org.framegen.config.PackageConfig;
-import org.framegen.config.RepositoryFrameworkEnum;
-import org.framegen.core.entity.Table;
-import org.framegen.core.generator.EntityGenerator;
+import org.framegen.core.generator.DaoGenerator;
+import org.framegen.core.model.Table;
+import org.framegen.core.generator.ModelGenerator;
 import org.framegen.core.generator.MapperGenerator;
 import org.framegen.core.generator.MapperXmlGenerator;
 import org.framegen.core.generator.ServiceGenerator;
@@ -28,7 +28,7 @@ public class FrameGenExecutor {
     protected Path resourcePath;
 
     public FrameGenExecutor(PackageConfig packageConfig, NamingSuffixConfig namingSuffixConfig,
-            FrameworkConfig frameworkConfig, Path outRootPath) {
+                            FrameworkConfig frameworkConfig, Path outRootPath) {
         this.packageConfig = packageConfig;
         this.frameworkConfig = frameworkConfig;
         this.namingSuffixConfig = namingSuffixConfig;
@@ -50,23 +50,31 @@ public class FrameGenExecutor {
             for (Table table : tables) {
                 log.info("FrameGen: 正在生成表: {}", table.getTableName());
 
-                // 生成Entity
-                createEntity(table);
+                // 生成Model
+                generateModel(table);
+
                 // 生成数据层
-                if (null != packageConfig.getMapper()) {
-                    createMapper(table);
-                    // 生成Mybatis映射文件
-                    if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS ||
-                            frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
-                        createMapperXml(table);
+                if (null != packageConfig.getDao()) {
+
+                    switch (frameworkConfig.repositoryFramework) {
+                        case NATIVE_JDBC:
+                            // 生成Dao
+//                            generateDao(table);
+                            break;
+
+                        case MYBATIS:
+                        case MYBATIS_PLUS:
+                            generateMapper(table);
+                            generateMapperXml(table);
+                            break;
                     }
                 }
                 // 生成服务层
                 if (null != packageConfig.getService()) {
-                    createService(table);
+                    generateService(table);
                     // 生成服务实现类
                     if (null != packageConfig.getServiceImpl()) {
-                        createServiceImpl(table);
+                        generateServiceImpl(table);
                     }
                 }
             }
@@ -76,31 +84,37 @@ public class FrameGenExecutor {
         }
     }
 
-    protected void createEntity(Table table) throws IOException, TemplateException {
-        EntityGenerator entityGenerator = new EntityGenerator(packageConfig, namingSuffixConfig.getEntity(),
+    protected void generateModel(Table table) throws IOException, TemplateException {
+        ModelGenerator modelGenerator = new ModelGenerator(packageConfig, namingSuffixConfig.getModel(),
                 frameworkConfig, codePath, table);
-        entityGenerator.generate();
+        modelGenerator.generate();
     }
 
-    protected void createMapper(Table table) throws IOException, TemplateException {
-        MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, namingSuffixConfig.getPersistence(),
+    protected void generateDao(Table table) throws IOException, TemplateException {
+        DaoGenerator daoGenerator = new DaoGenerator(packageConfig, namingSuffixConfig.getDao(),
+                frameworkConfig, codePath, table);
+        daoGenerator.generate();
+    }
+
+    protected void generateMapper(Table table) throws IOException, TemplateException {
+        MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, namingSuffixConfig.getDao(),
                 frameworkConfig, codePath, table);
         mapperGenerator.generate();
     }
 
-    protected void createMapperXml(Table table) throws IOException, TemplateException {
+    protected void generateMapperXml(Table table) throws IOException, TemplateException {
         MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig,
-                namingSuffixConfig.getPersistence(), frameworkConfig, resourcePath, table);
+                namingSuffixConfig.getDao(), frameworkConfig, resourcePath, table);
         mapperXmlGenerator.generate();
     }
 
-    protected void createService(Table table) throws IOException, TemplateException {
+    protected void generateService(Table table) throws IOException, TemplateException {
         ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, namingSuffixConfig.getService(),
                 frameworkConfig, codePath, table);
         serviceGenerator.generate();
     }
 
-    protected void createServiceImpl(Table table) throws IOException, TemplateException {
+    protected void generateServiceImpl(Table table) throws IOException, TemplateException {
         ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig,
                 namingSuffixConfig.getServiceImpl(), frameworkConfig, codePath, table);
         serviceImplGenerator.generate();

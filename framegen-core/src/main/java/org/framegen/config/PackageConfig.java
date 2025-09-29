@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 public class PackageConfig {
 
     // 公共前缀包名
-    private String origin;
+    private String root;
     // 模型包名
-    private String entity;
+    private String model;
     // 数据层包名
-    private String mapper;
+    private String dao;
     // 服务层包名
     private String service;
     // 服务实现层包名
@@ -28,12 +28,12 @@ public class PackageConfig {
     private String controller;
 
     public void applyDefault(FrameworkConfig frameworkConfig) {
-        if (null == entity) {
-            entity = "entity";
+        if (null == model) {
+            model = "model";
         }
-        if (null == mapper && (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
+        if (null == dao && (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
                 || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS)) {
-            mapper = "mapper";
+            dao = "mapper";
         }
         if (null == service && frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             service = "service";
