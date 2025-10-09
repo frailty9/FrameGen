@@ -39,5 +39,6 @@ public class PackageConfig {
         if (null == serviceImpl && frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             serviceImpl = "service.impl";
         }
+        return new PackageConfig(root, model, dao, service, serviceImpl, controller);
     }
 }
