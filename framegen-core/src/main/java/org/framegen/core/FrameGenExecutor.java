@@ -58,8 +58,7 @@ public class FrameGenExecutor {
 
                     switch (frameworkConfig.repositoryFramework) {
                         case NATIVE_JDBC:
-                            // 生成Dao
-//                            generateDao(table);
+                            generateDao(table);
                             break;
 
                         case MYBATIS:
