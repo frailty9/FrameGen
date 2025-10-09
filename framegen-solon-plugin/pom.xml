@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.frailty9</groupId>
         <artifactId>framegen</artifactId>
-        <version>0.2.2</version>
+        <version>0.3.0</version>
     </parent>
 
     <artifactId>framegen-solon-plugin</artifactId>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>io.github.frailty9</groupId>
             <artifactId>framegen-core</artifactId>
-            <version>0.2.2</version>
+            <version>0.3.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.zaxxer</groupId>

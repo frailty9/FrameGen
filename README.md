@@ -13,7 +13,7 @@ FrameGen 是一个依赖引入型的代码生成器，它可以根据数据库�
 <dependency>
     <groupId>io.github.framegen</groupId>
     <artifactId>framegen-core</artifactId>
-    <version>0.2.2</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
