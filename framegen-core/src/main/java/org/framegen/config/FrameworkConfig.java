@@ -21,57 +21,13 @@ public final class FrameworkConfig {
         verifyAppFramework();
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private Boolean enableSpring;
-        private Boolean enableSolon;
-        private RepositoryFrameworkEnum repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
-
-        private Builder() {}
-
-        public Builder enableSpring() {
-            enableSpring = Boolean.TRUE;
-            return this;
-        }
-
-        public Builder enableSolon() {
-            enableSolon = Boolean.TRUE;
-            return this;
-        }
-
-        public Builder enableMybatis() {
-            verifyRepositoryFramework();
-            repositoryFramework = RepositoryFrameworkEnum.MYBATIS;
-            return this;
-        }
-
-        public Builder enableMybatisPlus() {
-            verifyRepositoryFramework();
-            repositoryFramework = RepositoryFrameworkEnum.MYBATIS_PLUS;
-            return this;
-        }
-
-        public FrameworkConfig build() {
-            return new FrameworkConfig(enableSpring, enableSolon, repositoryFramework);
-        }
-
-        private void verifyRepositoryFramework() {
-            if (repositoryFramework != RepositoryFrameworkEnum.NATIVE_JDBC) {
-                throw new IllegalArgumentException("您不能同时选择多个持久层框架");
-            }
-        }
-    }
-
-    public void setEnableSpring(Boolean enableSpring) {
-        this.enableSpring = enableSpring;
+    public void enableSpring() {
+        this.enableSpring = Boolean.TRUE;
         verifyAppFramework();
     }
 
-    public void setEnableSolon(Boolean enableSolon) {
-        this.enableSolon = enableSolon;
+    public void enableSolon() {
+        this.enableSolon = Boolean.TRUE;
         verifyAppFramework();
     }
 

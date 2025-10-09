@@ -38,7 +38,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected String outModuleName = "";
     protected PackageConfig.Builder packageConfigBuilder = PackageConfig.builder();
     protected NamingSuffixConfig.Builder namingSuffixConfigBuilder = NamingSuffixConfig.builder();
-    protected FrameworkConfig.Builder frameworkConfigBuilder = FrameworkConfig.builder();
+    protected FrameworkConfig frameworkConfig = new FrameworkConfig();
 
     // 传入连接配置的构造方法
     public AbstractEntry(JdbcConfig jdbcConfig) {
@@ -66,10 +66,10 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             case NONE:
                 break;
             case SPRING_BOOT:
-                this.frameworkConfigBuilder.enableSpring();
+                this.frameworkConfig.enableSpring();
                 break;
             case SOLON:
-                this.frameworkConfigBuilder.enableSolon();
+                this.frameworkConfig.enableSolon();
                 break;
         }
     }
@@ -119,12 +119,12 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     }
 
     public T mybatis() {
-        this.frameworkConfigBuilder.enableMybatis();
+        this.frameworkConfig.enableMybatis();
         return self();
     }
 
     public T mybatisPlus() {
-        this.frameworkConfigBuilder.enableMybatisPlus();
+        this.frameworkConfig.enableMybatisPlus();
         return self();
     }
 
@@ -151,8 +151,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected abstract Class<? extends FrameGenExecutor> getExecutorClass();
 
     protected FrameGenExecutor getExecutor() {
-        // 构建各配置类
-        FrameworkConfig frameworkConfig = frameworkConfigBuilder.build();
+        // 构建配置类
         PackageConfig packageConfig = packageConfigBuilder.build().withDefaults(frameworkConfig);
         NamingSuffixConfig namingSuffixConfig = namingSuffixConfigBuilder.build().withDefaults(frameworkConfig);
 

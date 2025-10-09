@@ -228,11 +228,15 @@ public class FrameGenCLI {
     private void setCustomFrameworkConfig(FrameworkConfig frameworkConfig) {
         if (null == frameworkConfig.getEnableSpring() && !Boolean.TRUE.equals(frameworkConfig.getEnableSolon())) {
             boolean enableSpring = ConsoleUtils.readYesNo("您是否使用SpringBoot", false);
-            frameworkConfig.setEnableSpring(enableSpring);
+            if (enableSpring) {
+                frameworkConfig.enableSpring();
+            }
         }
         if (null == frameworkConfig.getEnableSolon() && !Boolean.TRUE.equals(frameworkConfig.getEnableSpring())) {
             boolean enableSolon = ConsoleUtils.readYesNo("您是否使用Solon", false);
-            frameworkConfig.setEnableSolon(enableSolon);
+            if (enableSolon) {
+                frameworkConfig.enableSolon();
+            }
         }
         if (RepositoryFrameworkEnum.NATIVE_JDBC == frameworkConfig.repositoryFramework) {
             boolean enableMybatis = ConsoleUtils.readYesNo("您是否使用Mybatis", false);
