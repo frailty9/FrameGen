@@ -164,10 +164,10 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         }
     }
 
-    public void run(Class<?> clazz) {
+    public void run() {
         // 设置默认包名
         packageConfig.applyDefault(frameworkConfig);
-        Path outRootPath = getOutputPath(clazz);
+        Path outRootPath = getOutputPath();
         // 获取执行器
         FrameGenExecutor executor = getExecutor(outRootPath);
 
@@ -207,7 +207,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         }
     }
 
-    protected Path getOutputPath(Class<?> clazz) {
+    protected Path getOutputPath() {
         Path outRootPath;
         try {
             if (this.outModuleName.isEmpty()) {
@@ -232,7 +232,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
      */
     public void runCli() {
         try {
-            Path outRootPath = getOutputPath(this.getClass());
+            Path outRootPath = getOutputPath();
 
             // 尝试动态加载FrameGenCLI类
             Class<?> frameGenCLIClass = Class.forName("org.framegen.core.FrameGenCLI");

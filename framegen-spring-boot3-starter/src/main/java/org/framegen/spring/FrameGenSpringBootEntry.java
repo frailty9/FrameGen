@@ -33,10 +33,6 @@ public class FrameGenSpringBootEntry extends AbstractEntry<FrameGenSpringBootEnt
         return this;
     }
 
-    public void run() {
-        super.run(SpringContextHolder.getContext().getClass());
-    }
-
     @Override
     protected Class<? extends FrameGenExecutor> getExecutorClass() {
         return FrameGenSpringExecutor.class;

@@ -38,10 +38,6 @@ public class FrameGenSolonEntry extends AbstractEntry<FrameGenSolonEntry> {
         return FrameGenSolonExecutor.class;
     }
 
-    public void run() {
-        super.run(SolonContextHolder.getContext().getClass());
-    }
-
     public void start() {
         run();
     }
