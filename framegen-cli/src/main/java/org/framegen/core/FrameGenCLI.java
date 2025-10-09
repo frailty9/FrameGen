@@ -141,7 +141,7 @@ public class FrameGenCLI {
             // 命令行设置包路径
             setCustomPackage(executor.packageConfig);
             // 应用默认缺省值
-            executor.packageConfig.applyDefault(executor.frameworkConfig);
+            executor.packageConfig.withDefaults(executor.frameworkConfig);
 
             // === 配置类名后缀 ===
             setNamingSuffix(executor.namingSuffixConfig);

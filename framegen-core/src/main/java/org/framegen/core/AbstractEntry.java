@@ -36,9 +36,9 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected Collection<String> includes = new ArrayList<>();
     protected Collection<String> excludes = new ArrayList<>();
     protected String outModuleName = "";
-    protected PackageConfig packageConfig = new PackageConfig();
-    protected NamingSuffixConfig namingSuffixConfig = new NamingSuffixConfig();
-    protected FrameworkConfig frameworkConfig = new FrameworkConfig();
+    protected PackageConfig.Builder packageConfigBuilder = PackageConfig.builder();
+    protected NamingSuffixConfig.Builder namingSuffixConfigBuilder = NamingSuffixConfig.builder();
+    protected FrameworkConfig.Builder frameworkConfigBuilder = FrameworkConfig.builder();
 
     // 传入连接配置的构造方法
     public AbstractEntry(JdbcConfig jdbcConfig) {
@@ -66,10 +66,10 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             case NONE:
                 break;
             case SPRING_BOOT:
-                this.frameworkConfig.setEnableSpring(true);
+                this.frameworkConfigBuilder.enableSpring();
                 break;
             case SOLON:
-                this.frameworkConfig.setEnableSolon(true);
+                this.frameworkConfigBuilder.enableSolon();
                 break;
         }
     }
@@ -119,26 +119,22 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     }
 
     public T mybatis() {
-        this.frameworkConfig.enableMybatis();
+        this.frameworkConfigBuilder.enableMybatis();
         return self();
     }
 
     public T mybatisPlus() {
-        this.frameworkConfig.enableMybatisPlus();
+        this.frameworkConfigBuilder.enableMybatisPlus();
         return self();
     }
 
     public T setPackage(Consumer<PackageConfig.Builder> consumer) {
-        PackageConfig.Builder builder = PackageConfig.builder();
-        consumer.accept(builder);
-        this.packageConfig = builder.build();
+        consumer.accept(packageConfigBuilder);
         return self();
     }
 
     public T setNamingSuffix(Consumer<NamingSuffixConfig.Builder> consumer) {
-        NamingSuffixConfig.Builder builder = NamingSuffixConfig.builder();
-        consumer.accept(builder);
-        this.namingSuffixConfig = builder.build();
+        consumer.accept(namingSuffixConfigBuilder);
         return self();
     }
 
@@ -154,7 +150,15 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     protected abstract Class<? extends FrameGenExecutor> getExecutorClass();
 
-    protected FrameGenExecutor getExecutor(Path outRootPath) {
+    protected FrameGenExecutor getExecutor() {
+        // 构建各配置类
+        FrameworkConfig frameworkConfig = frameworkConfigBuilder.build();
+        PackageConfig packageConfig = packageConfigBuilder.build().withDefaults(frameworkConfig);
+        NamingSuffixConfig namingSuffixConfig = namingSuffixConfigBuilder.build().withDefaults(frameworkConfig);
+
+        // 构建输出路径
+        Path outRootPath = getOutputPath();
+
         try {
             Constructor<? extends FrameGenExecutor> ctor = getExecutorClass().getDeclaredConstructor(
                     PackageConfig.class, NamingSuffixConfig.class, FrameworkConfig.class, Path.class);
@@ -165,11 +169,8 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     }
 
     public void run() {
-        // 设置默认包名
-        packageConfig.applyDefault(frameworkConfig);
-        Path outRootPath = getOutputPath();
         // 获取执行器
-        FrameGenExecutor executor = getExecutor(outRootPath);
+        FrameGenExecutor executor = getExecutor();
 
         try (Query query = new Query()) {
             List<Table> tables = query.getTables();
@@ -266,7 +267,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             Method runCommandLineMethod = frameGenCLIClass.getDeclaredMethod("runCommandLine", FrameGenExecutor.class);
 
             // 调用runCommandLine方法
-            runCommandLineMethod.invoke(frameGenCLIInstance, getExecutor(outRootPath));
+            runCommandLineMethod.invoke(frameGenCLIInstance, getExecutor());
         } catch (ClassNotFoundException e) {
             // 如果类未找到
             String msg = "请检查是否引入了framegen-cli依赖";

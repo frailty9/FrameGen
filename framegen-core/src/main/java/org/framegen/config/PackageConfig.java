@@ -17,7 +17,8 @@ public class PackageConfig {
     // 公共前缀包名
     private String root;
     // 模型包名
-    private String model;
+    @lombok.Builder.Default
+    private String model = "model";
     // 数据层包名
     private String dao;
     // 服务层包名
@@ -27,10 +28,7 @@ public class PackageConfig {
     // 控制层包名
     private String controller;
 
-    public void applyDefault(FrameworkConfig frameworkConfig) {
-        if (null == model) {
-            model = "model";
-        }
+    public PackageConfig withDefaults(FrameworkConfig frameworkConfig) {
         if (null == dao && (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
                 || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS)) {
             dao = "mapper";

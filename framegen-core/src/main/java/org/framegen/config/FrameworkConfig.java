@@ -21,10 +21,16 @@ public final class FrameworkConfig {
         verifyAppFramework();
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private Boolean enableSpring;
         private Boolean enableSolon;
         private RepositoryFrameworkEnum repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
+
+        private Builder() {}
 
         public Builder enableSpring() {
             enableSpring = Boolean.TRUE;
