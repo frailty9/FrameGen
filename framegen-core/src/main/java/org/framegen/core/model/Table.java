@@ -19,7 +19,8 @@ public class Table {
     private String tableSchema;
     private String tableName;
     private String tableComment;
-    Collection<Column> columns;
+    private Collection<Column> columns;
+    private Collection<String> typeImports;
 
     public Table(String databaseProductName, String tableSchema, String tableName, String tableComment) {
         this.databaseProductName = databaseProductName;

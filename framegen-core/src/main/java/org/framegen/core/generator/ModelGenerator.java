@@ -23,34 +23,10 @@ public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
     @Override
     protected List<String> getImports() {
         List<String> imports = new ArrayList<>();
-        table.getColumns().forEach(column -> {
-            String codeType = column.getDataType();
-            switch (codeType) {
-                case "BigDecimal":
-                    imports.add("java.math.BigDecimal");
-                    break;
-                case "LocalDate":
-                    imports.add("java.time.LocalDate");
-                    break;
-                case "LocalTime":
-                    imports.add("java.time.LocalTime");
-                    break;
-                case "LocalDateTime":
-                    imports.add("java.time.LocalDateTime");
-                    break;
-                default:
-                    break;
-            }
-            if (GlobalConfigHolder.enableKotlin) {
-                switch (codeType) {
+        if (null != table.getTypeImports()){
+            imports.addAll(table.getTypeImports());
+        }
 
-                }
-            } else {
-                switch (codeType) {
-
-                }
-            }
-        });
         if (GlobalConfigHolder.enableLombok && !GlobalConfigHolder.enableKotlin) {
             imports.add("lombok.AllArgsConstructor");
             imports.add("lombok.Data");
