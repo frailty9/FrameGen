@@ -34,7 +34,8 @@ public abstract class AbstractGenerator<E> {
     // 类名后缀
     protected final String classNameSuffix;
 
-    public AbstractGenerator(String baseTemplateName, String classNameSuffix, FrameworkConfig frameworkConfig, Path codePath, Table table, PackageConfig packageConfig)
+    public AbstractGenerator(String baseTemplateName, String classNameSuffix, FrameworkConfig frameworkConfig,
+            Path codePath, Table table, PackageConfig packageConfig)
             throws IOException {
         // 拼接模板文件名
         StringBuilder templateName = new StringBuilder().append(baseTemplateName);
@@ -64,8 +65,8 @@ public abstract class AbstractGenerator<E> {
      * @return 完整包路径
      */
     protected String getFullPackage(Function<PackageConfig, String> function) {
-        if (null != packageConfig.getOrigin() && !packageConfig.getOrigin().isEmpty()) {
-            return packageConfig.getOrigin() + "." + function.apply(packageConfig);
+        if (null != packageConfig.getRoot() && !packageConfig.getRoot().isEmpty()) {
+            return packageConfig.getRoot() + "." + function.apply(packageConfig);
         } else {
             return function.apply(packageConfig);
         }

@@ -12,6 +12,7 @@ public final class FrameworkConfig {
     private Boolean enableSpring;
     @Getter
     private Boolean enableSolon;
+
     public RepositoryFrameworkEnum repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
 
     public FrameworkConfig(Boolean enableSpring, Boolean enableSolon, RepositoryFrameworkEnum repositoryFramework) {
@@ -21,62 +22,24 @@ public final class FrameworkConfig {
         verifyAppFramework();
     }
 
-    public static class Builder {
-        private Boolean enableSpring;
-        private Boolean enableSolon;
-        private RepositoryFrameworkEnum repositoryFramework = RepositoryFrameworkEnum.NATIVE_JDBC;
-
-        public Builder enableSpring() {
-            enableSpring = Boolean.TRUE;
-            return this;
-        }
-
-        public Builder enableSolon() {
-            enableSolon = Boolean.TRUE;
-            return this;
-        }
-
-        public Builder enableMybatis() {
-            verifyRepositoryFramework();
-            repositoryFramework = RepositoryFrameworkEnum.MYBATIS;
-            return this;
-        }
-
-        public Builder enableMybatisPlus() {
-            verifyRepositoryFramework();
-            repositoryFramework = RepositoryFrameworkEnum.MYBATIS_PLUS;
-            return this;
-        }
-
-        public FrameworkConfig build() {
-            return new FrameworkConfig(enableSpring, enableSolon, repositoryFramework);
-        }
-
-        private void verifyRepositoryFramework() {
-            if (repositoryFramework != RepositoryFrameworkEnum.NATIVE_JDBC) {
-                throw new IllegalArgumentException("您不能同时选择多个持久层框架");
-            }
-        }
-    }
-
-    public void setEnableSpring(Boolean enableSpring) {
-        this.enableSpring = enableSpring;
+    public void enableSpring() {
+        this.enableSpring = Boolean.TRUE;
         verifyAppFramework();
     }
 
-    public void setEnableSolon(Boolean enableSolon) {
-        this.enableSolon = enableSolon;
+    public void enableSolon() {
+        this.enableSolon = Boolean.TRUE;
         verifyAppFramework();
     }
 
     public void enableMybatis() {
         verifyRepositoryFramework();
-        repositoryFramework = RepositoryFrameworkEnum.MYBATIS;
+        this.repositoryFramework = RepositoryFrameworkEnum.MYBATIS;
     }
 
     public void enableMybatisPlus() {
         verifyRepositoryFramework();
-        repositoryFramework = RepositoryFrameworkEnum.MYBATIS_PLUS;
+        this.repositoryFramework = RepositoryFrameworkEnum.MYBATIS_PLUS;
     }
 
     private void verifyAppFramework() {

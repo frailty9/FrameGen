@@ -2,9 +2,10 @@ package org.framegen.spring;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.framegen.config.AppFrameworkEnum;
 import org.framegen.core.AbstractEntry;
 import org.framegen.core.FrameGenExecutor;
-import org.framegen.core.service.SpringDataSourceFactory;
+import org.framegen.spring.service.SpringDataSourceFactory;
 import org.framegen.spring.util.SpringContextHolder;
 import org.springframework.context.ApplicationContext;
 
@@ -16,7 +17,7 @@ public class FrameGenSpringBootEntry extends AbstractEntry<FrameGenSpringBootEnt
     }
 
     public FrameGenSpringBootEntry(ApplicationContext context, String dataSourceName) {
-        super(new SpringDataSourceFactory(context).getDataSource(), dataSourceName);
+        super(new SpringDataSourceFactory(context).getDataSource(), dataSourceName, AppFrameworkEnum.SPRING_BOOT);
     }
 
     public static FrameGenSpringBootEntry create(ApplicationContext context) {
@@ -30,10 +31,6 @@ public class FrameGenSpringBootEntry extends AbstractEntry<FrameGenSpringBootEnt
     @Override
     public FrameGenSpringBootEntry self() {
         return this;
-    }
-
-    public void run() {
-        super.run(SpringContextHolder.getContext().getClass());
     }
 
     @Override

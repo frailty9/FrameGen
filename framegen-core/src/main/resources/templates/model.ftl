@@ -19,26 +19,26 @@ public class ${className} {
     * ${column.fieldName}
     </#if>
     */
-    private ${column.dataType} ${column.fieldName};
+    private ${column.dataType} ${column.variableName};
     </#list>
 
     <#if (!imports?seq_contains("lombok.Data"))>
     public ${className}() {
     }
 
-    public ${className}(<#list data as column>${column.dataType} ${column.fieldName}<#sep>, </#list>) {
+    public ${className}(<#list data as column>${column.dataType} ${column.variableName}<#sep>, </#list>) {
         <#list data as column>
-        this.${column.fieldName} = ${column.fieldName};
+        this.${column.variableName} = ${column.variableName};
         </#list>
     }    
     <#list data as column>
     
-    public ${column.dataType} get${column.fieldName?cap_first}() {
-        return ${column.fieldName};
+    public ${column.dataType} get${column.variableName?cap_first}() {
+        return ${column.variableName};
     }
 
-    public void set${column.fieldName?cap_first}(${column.dataType} ${column.fieldName}) {
-        this.${column.fieldName} = ${column.fieldName};
+    public void set${column.variableName?cap_first}(${column.dataType} ${column.variableName}) {
+        this.${column.variableName} = ${column.variableName};
     }
     </#list>
     </#if>

@@ -13,14 +13,6 @@ public final class JdbcConfig {
     private final String password;
     private final Properties additionalProps;
 
-    private JdbcConfig(Builder builder) {
-        this.url = builder.url;
-        this.driverClassName = builder.driverClassName;
-        this.username = builder.username;
-        this.password = builder.password;
-        this.additionalProps = builder.additionalProps;
-    }
-
     public Properties toProperties() {
         Properties props = new Properties();
         props.setProperty("jdbcUrl", this.url);
@@ -96,7 +88,7 @@ public final class JdbcConfig {
             if (this.password == null) {
                 throw new IllegalStateException("password is required");
             }
-            return new JdbcConfig(this);
+            return new JdbcConfig(this.url, this.driverClassName, this.username, this.password, this.additionalProps);
         }
     }
 }

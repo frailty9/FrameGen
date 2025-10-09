@@ -1,7 +1,10 @@
 package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.framegen.config.FrameworkConfig;
+import org.framegen.config.GlobalConfigHolder;
+import org.framegen.config.NamingSuffixConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.db.Query;
@@ -11,10 +14,12 @@ import org.framegen.core.service.DataSourceHolder;
 import org.framegen.util.ConsoleStyle;
 import org.framegen.util.ConsoleUtils;
 import org.framegen.util.StrUtil;
+import org.framegen.util.StringSetter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,8 +48,9 @@ public class FrameGenCLI {
             DataSourceHolder.changeDataSource(dataSourceNames.get(selected - 1));
         }
 
-        // === 选择表格 ===
         try (Query query = new Query()) {
+            // === 选择表格 ===
+
             // 获取所有表格信息
             List<Table> tables = query.getTables();
             // 取得表格名称
@@ -89,6 +95,12 @@ public class FrameGenCLI {
                 StrUtil.setTableNamePrefix(tablePrefix);
             }
 
+            // === 选择编程语言 ===
+            boolean isKotlin = ConsoleUtils.readYesNo("是否使用Kotlin", false);
+            if (isKotlin) {
+                GlobalConfigHolder.enableKotlin = true;
+            }
+
             // === 选择输出目标 ===
             List<String> menu1 = new ArrayList<>();
             menu1.add("通过选择模块");
@@ -129,7 +141,10 @@ public class FrameGenCLI {
             // 命令行设置包路径
             setCustomPackage(executor.packageConfig);
             // 应用默认缺省值
-            executor.packageConfig.applyDefault(executor.frameworkConfig);
+            executor.packageConfig.withDefaults(executor.frameworkConfig);
+
+            // === 配置类名后缀 ===
+            setNamingSuffix(executor.namingSuffixConfig);
 
             // === 开始生成 ===
             // 展示信息
@@ -178,20 +193,20 @@ public class FrameGenCLI {
     }
 
     private void setCustomPackage(PackageConfig packageConfig) {
-        if (null == packageConfig.getOrigin()) {
-            String origin = ConsoleUtils.readLine("请输入您的统一的前缀包名[没有则直接回车]: ");
-            if (origin.isEmpty()) origin = null;
-            packageConfig.setOrigin(origin);
+        if (null == packageConfig.getRoot()) {
+            String root = ConsoleUtils.readLine("请输入您的统一的前缀包名[没有则直接回车]: ");
+            if (root.isEmpty()) root = null;
+            packageConfig.setRoot(root);
         }
         if (null == packageConfig.getModel()) {
             String model = ConsoleUtils.readLine("请输入您的Model包名[model]: ");
             if (model.isEmpty()) model = null;
             packageConfig.setModel(model);
         }
-        if (null == packageConfig.getMapper()) {
+        if (null == packageConfig.getDao()) {
             String mapper = ConsoleUtils.readLine("请输入您的Mapper包名[mapper]: ");
             if (mapper.isEmpty()) mapper = null;
-            packageConfig.setMapper(mapper);
+            packageConfig.setDao(mapper);
         }
         if (null == packageConfig.getService()) {
             String service = ConsoleUtils.readLine("请输入您的Service包名[当框架需要时默认为service]: ");
@@ -213,11 +228,15 @@ public class FrameGenCLI {
     private void setCustomFrameworkConfig(FrameworkConfig frameworkConfig) {
         if (null == frameworkConfig.getEnableSpring() && !Boolean.TRUE.equals(frameworkConfig.getEnableSolon())) {
             boolean enableSpring = ConsoleUtils.readYesNo("您是否使用SpringBoot", false);
-            frameworkConfig.setEnableSpring(enableSpring);
+            if (enableSpring) {
+                frameworkConfig.enableSpring();
+            }
         }
         if (null == frameworkConfig.getEnableSolon() && !Boolean.TRUE.equals(frameworkConfig.getEnableSpring())) {
             boolean enableSolon = ConsoleUtils.readYesNo("您是否使用Solon", false);
-            frameworkConfig.setEnableSolon(enableSolon);
+            if (enableSolon) {
+                frameworkConfig.enableSolon();
+            }
         }
         if (RepositoryFrameworkEnum.NATIVE_JDBC == frameworkConfig.repositoryFramework) {
             boolean enableMybatis = ConsoleUtils.readYesNo("您是否使用Mybatis", false);
@@ -230,5 +249,33 @@ public class FrameGenCLI {
                 return;
             }
         }
+    }
+
+    private void setNamingSuffix(NamingSuffixConfig nsConfig) {
+        // 菜单
+            List<String> menu2 = Arrays.asList(
+                    "实体类后缀[" + nsConfig.getModel() + "]",
+                    "持久层类后缀[" + nsConfig.getDao() + "]",
+                    "服务层接口类后缀[" + nsConfig.getService() + "]",
+                    "服务层实现类后缀[" + nsConfig.getServiceImpl() + "]",
+                    "控制器层类后缀[" + nsConfig.getController() + "]");
+            // 控制菜单
+            List<StringSetter> actions = Arrays.asList(
+                    nsConfig::setModel,
+                    nsConfig::setDao,
+                    nsConfig::setService,
+                    nsConfig::setServiceImpl,
+                    nsConfig::setController);
+
+            Set<Integer> selected2 = ConsoleUtils.selectMultiple("是否需要自定义类名后缀, 请选择需要修改的项, 输入0跳过修改", menu2);
+
+            if (!selected2.isEmpty()) {
+                for (int i : selected2) {
+                    String input = ConsoleUtils.readLine("请输入新的" + menu2.get(i - 1) + ": ");
+                    if (!input.isEmpty()) {
+                        actions.get(i - 1).set(input);;
+                    }
+                }
+            }
     }
 }

@@ -16,9 +16,9 @@ import java.util.Properties;
 @Slf4j
 public class ServiceImplGenerator extends AbstractGenerator<Properties> {
 
-    public ServiceImplGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath,
+    public ServiceImplGenerator(PackageConfig packageConfig, String classNameSuffix, FrameworkConfig frameworkConfig, Path codePath,
             Table table) throws IOException {
-        super("serviceImpl", "ServiceImpl", frameworkConfig, codePath, table, packageConfig);
+        super("serviceImpl", classNameSuffix, frameworkConfig, codePath, table, packageConfig);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
 
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.extension.service.impl.ServiceImpl");
-            imports.add(getFullPackage(PackageConfig::getMapper) + "." + table.getPascalCaseName()
+            imports.add(getFullPackage(PackageConfig::getDao) + "." + table.getPascalCaseName()
                     + "Mapper");
             imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
             imports.add(getFullPackage(PackageConfig::getService) + "." + table.getPascalCaseName()

@@ -20,9 +20,9 @@ data class ${className}(
     </#if>
     */
     <#if column.nullable>
-    private var ${column.fieldName}: ${column.dataType}? = null<#sep>,</#sep>
+    var ${column.variableName}: ${column.dataType}? = null<#sep>,</#sep>
     <#else>
-    private var ${column.fieldName}: ${column.dataType}<#sep>,</#sep>
+    var ${column.variableName}: ${column.dataType}<#sep>,</#sep>
     </#if>
     </#list>
 )

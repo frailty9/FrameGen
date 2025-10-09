@@ -1,6 +1,7 @@
 package org.framegen.solon;
 
 import org.framegen.config.FrameworkConfig;
+import org.framegen.config.NamingSuffixConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.core.FrameGenExecutor;
 
@@ -11,8 +12,8 @@ import java.nio.file.Path;
  */
 public class FrameGenSolonExecutor extends FrameGenExecutor {
 
-    public FrameGenSolonExecutor(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path outRootPath) {
-        super(packageConfig, frameworkConfig, outRootPath);
+    public FrameGenSolonExecutor(PackageConfig packageConfig, NamingSuffixConfig namingSuffixConfig, FrameworkConfig frameworkConfig, Path outRootPath) {
+        super(packageConfig, namingSuffixConfig, frameworkConfig, outRootPath);
     }
 
     // @Override

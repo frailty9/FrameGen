@@ -1,21 +1,26 @@
 package org.framegen.config;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 生成器输出包配置类
  */
 @Data
+@Builder(builderClassName = "Builder")
+@NoArgsConstructor
 @AllArgsConstructor
 public class PackageConfig {
 
     // 公共前缀包名
-    private String origin;
+    private String root;
     // 模型包名
-    private String model;
+    @lombok.Builder.Default
+    private String model = "model";
     // 数据层包名
-    private String mapper;
+    private String dao;
     // 服务层包名
     private String service;
     // 服务实现层包名
@@ -23,60 +28,10 @@ public class PackageConfig {
     // 控制层包名
     private String controller;
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private String origin;
-        private String model;
-        private String mapper;
-        private String service;
-        private String serviceImpl;
-        private String controller;
-
-        public Builder origin(String origin) {
-            this.origin = origin;
-            return this;
-        }
-
-        public Builder model(String model) {
-            this.model = model;
-            return this;
-        }
-
-        public Builder mapper(String mapper) {
-            this.mapper = mapper;
-            return this;
-        }
-
-        public Builder service(String service) {
-            this.service = service;
-            return this;
-        }
-
-        public Builder serviceImpl(String serviceImpl) {
-            this.serviceImpl = serviceImpl;
-            return this;
-        }
-
-        public Builder controller(String controller) {
-            this.controller = controller;
-            return this;
-        }
-
-        public PackageConfig build() {
-            return new PackageConfig(origin, model, mapper, service, serviceImpl, controller);
-        }
-    }
-
-    public void applyDefault(FrameworkConfig frameworkConfig) {
-        if (null == model) {
-            model = "model";
-        }
-        if (null == mapper && (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
+    public PackageConfig withDefaults(FrameworkConfig frameworkConfig) {
+        if (null == dao && (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
                 || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS)) {
-            mapper = "mapper";
+            dao = "mapper";
         }
         if (null == service && frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             service = "service";
@@ -84,5 +39,6 @@ public class PackageConfig {
         if (null == serviceImpl && frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             serviceImpl = "service.impl";
         }
+        return new PackageConfig(root, model, dao, service, serviceImpl, controller);
     }
 }

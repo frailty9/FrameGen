@@ -9,9 +9,9 @@
         <version>0.3.0</version>
     </parent>
 
-    <artifactId>framegen-spring-boot3-starter</artifactId>
+    <artifactId>framegen-spring-boot-starter</artifactId>
 
-    <name>FrameGen Spring Boot 3 Starter</name>
+    <name>FrameGen Spring Boot Starter</name>
     <description>FrameGen integration for Spring Boot 3 applications</description>
     <url>https://gitee.com/frailty/frame-gen/tree/main/framegen-spring-boot3-starter</url>
 

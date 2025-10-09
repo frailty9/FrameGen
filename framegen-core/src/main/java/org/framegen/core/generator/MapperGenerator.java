@@ -1,21 +1,23 @@
 package org.framegen.core.generator;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
 import org.framegen.config.RepositoryFrameworkEnum;
+import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 @Slf4j
 public class MapperGenerator extends AbstractGenerator<Properties> {
 
-    public MapperGenerator(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
-        super("mapper", "Mapper", frameworkConfig, codePath, table, packageConfig);
+    public MapperGenerator(PackageConfig packageConfig, String classNameSuffix, FrameworkConfig frameworkConfig, Path codePath, Table table) throws IOException {
+        super("mapper", classNameSuffix, frameworkConfig, codePath, table, packageConfig);
     }
 
     @Override
@@ -25,10 +27,13 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
                 || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("org.apache.ibatis.annotations.Mapper");
+            imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
+        }
+        if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS) {
+            imports.add("java.util.List");
         }
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
-            imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
         }
         if (frameworkConfig.isEnableSpring()) {
             imports.add("org.springframework.stereotype.Repository");
@@ -54,14 +59,19 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
 
     @Override
     protected String getPackagePath() {
-        return getFullPackage(PackageConfig::getMapper);
+        return getFullPackage(PackageConfig::getDao);
     }
 
     @Override
     protected Properties getMoreData() {
         Properties data = new Properties();
+
+        Column primaryColumn = table.getPrimaryColumn();
+
         data.setProperty("frameworkName", frameworkConfig.repositoryFramework.name());
         data.setProperty("modelClassName", table.getPascalCaseName());
+        data.setProperty("primaryJType", primaryColumn.getDataType());
+        data.setProperty("primaryVarName", primaryColumn.getVariableName());
         return data;
     }
 }

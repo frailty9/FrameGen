@@ -1,16 +1,20 @@
 package org.framegen.core.db;
 
 import lombok.extern.slf4j.Slf4j;
-import org.framegen.core.service.DataSourceHolder;
 import org.framegen.core.db.converter.AbstractTypeConverter;
 import org.framegen.core.db.converter.ConverterFactory;
-import org.framegen.core.model.Column;
 import org.framegen.core.db.sql.AbstractSqlProvider;
 import org.framegen.core.db.sql.SqlProviderFactory;
+import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
+import org.framegen.core.service.DataSourceHolder;
 import org.framegen.util.StrUtil;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -63,7 +67,8 @@ public class Query implements AutoCloseable {
                 String codeDataType = this.typeConverter.converterToCodeType(dbDataType);
 
                 columns.add(Column.builder()
-                        .fieldName(StrUtil.toCamelCase(rs.getString("field_name")))
+                        .fieldName(rs.getString("field_name"))
+                        .variableName(StrUtil.toCamelCase(rs.getString("field_name")))
                         .defaultValue(rs.getString("default_value"))
                         .isNullable("YES".equals(rs.getString("is_nullable")))
                         .dataType(codeDataType)

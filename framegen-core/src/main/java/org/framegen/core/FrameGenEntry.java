@@ -1,6 +1,8 @@
 package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.framegen.config.AppFrameworkEnum;
 import org.framegen.config.JdbcConfig;
 
 import java.util.Map;
@@ -19,7 +21,7 @@ public class FrameGenEntry extends AbstractEntry<FrameGenEntry> {
     }
 
     public FrameGenEntry(Map<String, DataSource> dataSourceMap, String dataSourceName) {
-        super(dataSourceMap, dataSourceName);
+        super(dataSourceMap, dataSourceName, AppFrameworkEnum.NONE);
     }
 
     public static FrameGenEntry create(JdbcConfig jdbcConfig) {

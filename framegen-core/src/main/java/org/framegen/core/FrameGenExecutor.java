@@ -4,10 +4,15 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
+import org.framegen.config.NamingSuffixConfig;
 import org.framegen.config.PackageConfig;
-import org.framegen.config.RepositoryFrameworkEnum;
-import org.framegen.core.generator.*;
+import org.framegen.core.generator.DaoGenerator;
 import org.framegen.core.model.Table;
+import org.framegen.core.generator.ModelGenerator;
+import org.framegen.core.generator.MapperGenerator;
+import org.framegen.core.generator.MapperXmlGenerator;
+import org.framegen.core.generator.ServiceGenerator;
+import org.framegen.core.generator.ServiceImplGenerator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -17,13 +22,16 @@ import java.util.List;
 public class FrameGenExecutor {
     protected final PackageConfig packageConfig;
     protected final FrameworkConfig frameworkConfig;
+    protected final NamingSuffixConfig namingSuffixConfig;
     protected Path outRootPath;
     protected Path codePath;
     protected Path resourcePath;
 
-    public FrameGenExecutor(PackageConfig packageConfig, FrameworkConfig frameworkConfig, Path outRootPath) {
+    public FrameGenExecutor(PackageConfig packageConfig, NamingSuffixConfig namingSuffixConfig,
+                            FrameworkConfig frameworkConfig, Path outRootPath) {
         this.packageConfig = packageConfig;
         this.frameworkConfig = frameworkConfig;
+        this.namingSuffixConfig = namingSuffixConfig;
         setOutRootPath(outRootPath);
     }
 
@@ -43,22 +51,29 @@ public class FrameGenExecutor {
                 log.info("FrameGen: 正在生成表: {}", table.getTableName());
 
                 // 生成Model
-                createModel(table);
+                generateModel(table);
+
                 // 生成数据层
-                if (null != packageConfig.getMapper()) {
-                    createMapper(table);
-                    // 生成Mybatis映射文件
-                    if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS ||
-                            frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
-                        createMapperXml(table);
+                if (null != packageConfig.getDao()) {
+
+                    switch (frameworkConfig.repositoryFramework) {
+                        case NATIVE_JDBC:
+                            generateDao(table);
+                            break;
+
+                        case MYBATIS:
+                        case MYBATIS_PLUS:
+                            generateMapper(table);
+                            generateMapperXml(table);
+                            break;
                     }
                 }
                 // 生成服务层
                 if (null != packageConfig.getService()) {
-                    createService(table);
+                    generateService(table);
                     // 生成服务实现类
                     if (null != packageConfig.getServiceImpl()) {
-                        createServiceImpl(table);
+                        generateServiceImpl(table);
                     }
                 }
             }
@@ -68,28 +83,39 @@ public class FrameGenExecutor {
         }
     }
 
-    protected void createModel(Table table) throws IOException, TemplateException {
-        ModelGenerator modelGenerator = new ModelGenerator(packageConfig, frameworkConfig, codePath, table);
+    protected void generateModel(Table table) throws IOException, TemplateException {
+        ModelGenerator modelGenerator = new ModelGenerator(packageConfig, namingSuffixConfig.getModel(),
+                frameworkConfig, codePath, table);
         modelGenerator.generate();
     }
 
-    protected void createMapper(Table table) throws IOException, TemplateException {
-        MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, frameworkConfig, codePath, table);
+    protected void generateDao(Table table) throws IOException, TemplateException {
+        DaoGenerator daoGenerator = new DaoGenerator(packageConfig, namingSuffixConfig.getDao(),
+                frameworkConfig, codePath, table);
+        daoGenerator.generate();
+    }
+
+    protected void generateMapper(Table table) throws IOException, TemplateException {
+        MapperGenerator mapperGenerator = new MapperGenerator(packageConfig, namingSuffixConfig.getDao(),
+                frameworkConfig, codePath, table);
         mapperGenerator.generate();
     }
 
-    protected void createMapperXml(Table table) throws IOException, TemplateException {
-        MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig, frameworkConfig, resourcePath, table);
+    protected void generateMapperXml(Table table) throws IOException, TemplateException {
+        MapperXmlGenerator mapperXmlGenerator = new MapperXmlGenerator(packageConfig,
+                namingSuffixConfig.getDao(), frameworkConfig, resourcePath, table);
         mapperXmlGenerator.generate();
     }
 
-    protected void createService(Table table) throws IOException, TemplateException {
-        ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, frameworkConfig, codePath, table);
+    protected void generateService(Table table) throws IOException, TemplateException {
+        ServiceGenerator serviceGenerator = new ServiceGenerator(packageConfig, namingSuffixConfig.getService(),
+                frameworkConfig, codePath, table);
         serviceGenerator.generate();
     }
 
-    protected void createServiceImpl(Table table) throws IOException, TemplateException {
-        ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig, frameworkConfig, codePath, table);
+    protected void generateServiceImpl(Table table) throws IOException, TemplateException {
+        ServiceImplGenerator serviceImplGenerator = new ServiceImplGenerator(packageConfig,
+                namingSuffixConfig.getServiceImpl(), frameworkConfig, codePath, table);
         serviceImplGenerator.generate();
     }
 }

@@ -1,13 +1,15 @@
 package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
+import org.framegen.core.service.DataSourceHolder;
+import org.framegen.config.AppFrameworkEnum;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
+import org.framegen.config.JdbcConfig;
+import org.framegen.config.NamingSuffixConfig;
 import org.framegen.config.PackageConfig;
-import org.framegen.core.service.DataSourceHolder;
 import org.framegen.core.db.Query;
 import org.framegen.core.db.impl.HikariDataSourceGetter;
-import org.framegen.config.JdbcConfig;
 import org.framegen.core.file.FileUtil;
 import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
@@ -34,11 +36,20 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected Collection<String> includes = new ArrayList<>();
     protected Collection<String> excludes = new ArrayList<>();
     protected String outModuleName = "";
-    protected PackageConfig packageConfig = PackageConfig.builder().build();
+    protected PackageConfig.Builder packageConfigBuilder = PackageConfig.builder();
+    protected NamingSuffixConfig.Builder namingSuffixConfigBuilder = NamingSuffixConfig.builder();
     protected FrameworkConfig frameworkConfig = new FrameworkConfig();
 
     // 传入连接配置的构造方法
     public AbstractEntry(JdbcConfig jdbcConfig) {
+        DataSourceHolder.setDataSource(new HikariDataSourceGetter(jdbcConfig).getDataSource());
+    }
+
+    // 传入连接配置的构造方法(Consumer构建)
+    public AbstractEntry(Consumer<JdbcConfig.Builder> consumer) {
+        JdbcConfig.Builder builder = JdbcConfig.builder();
+        consumer.accept(builder);
+        JdbcConfig jdbcConfig = builder.build();
         DataSourceHolder.setDataSource(new HikariDataSourceGetter(jdbcConfig).getDataSource());
     }
 
@@ -47,9 +58,20 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         DataSourceHolder.setDataSource(dataSource);
     }
 
-    public AbstractEntry(Map<String, DataSource> dataSourceMap, String dataSourceName) {
+    public AbstractEntry(Map<String, DataSource> dataSourceMap, String dataSourceName, AppFrameworkEnum appFramework) {
         DataSourceHolder.setDataSourceMap(dataSourceMap);
         DataSourceHolder.changeDataSource(dataSourceName);
+
+        switch (appFramework) {
+            case NONE:
+                break;
+            case SPRING_BOOT:
+                this.frameworkConfig.enableSpring();
+                break;
+            case SOLON:
+                this.frameworkConfig.enableSolon();
+                break;
+        }
     }
 
     public abstract T self();
@@ -107,9 +129,12 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     }
 
     public T setPackage(Consumer<PackageConfig.Builder> consumer) {
-        PackageConfig.Builder builder = PackageConfig.builder();
-        consumer.accept(builder);
-        this.packageConfig = builder.build();
+        consumer.accept(packageConfigBuilder);
+        return self();
+    }
+
+    public T setNamingSuffix(Consumer<NamingSuffixConfig.Builder> consumer) {
+        consumer.accept(namingSuffixConfigBuilder);
         return self();
     }
 
@@ -125,22 +150,26 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     protected abstract Class<? extends FrameGenExecutor> getExecutorClass();
 
-    protected FrameGenExecutor getExecutor(Path outRootPath) {
+    protected FrameGenExecutor getExecutor() {
+        // 构建配置类
+        PackageConfig packageConfig = packageConfigBuilder.build().withDefaults(frameworkConfig);
+        NamingSuffixConfig namingSuffixConfig = namingSuffixConfigBuilder.build().withDefaults(frameworkConfig);
+
+        // 构建输出路径
+        Path outRootPath = getOutputPath();
+
         try {
             Constructor<? extends FrameGenExecutor> ctor = getExecutorClass().getDeclaredConstructor(
-                    PackageConfig.class, FrameworkConfig.class, Path.class);
-            return ctor.newInstance(packageConfig, frameworkConfig, outRootPath);
+                    PackageConfig.class, NamingSuffixConfig.class, FrameworkConfig.class, Path.class);
+            return ctor.newInstance(packageConfig, namingSuffixConfig, frameworkConfig, outRootPath);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create executor: " + getExecutorClass(), e);
         }
     }
 
-    public void run(Class<?> clazz) {
-        // 设置默认包名
-        packageConfig.applyDefault(frameworkConfig);
-        Path outRootPath = getOutputPath(clazz);
+    public void run() {
         // 获取执行器
-        FrameGenExecutor executor = getExecutor(outRootPath);
+        FrameGenExecutor executor = getExecutor();
 
         try (Query query = new Query()) {
             List<Table> tables = query.getTables();
@@ -167,8 +196,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             // 判断是否启用移除前缀, 但值为空(表示自动)
             if ("".equals(StrUtil.getTableNamePrefix())) {
                 String prefix = StrUtil.getCommonPrefix(
-                        tables.stream().map(Table::getTableName).collect(Collectors.toList())
-                );
+                        tables.stream().map(Table::getTableName).collect(Collectors.toList()));
                 StrUtil.setTableNamePrefix(prefix);
             }
 
@@ -179,7 +207,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         }
     }
 
-    protected Path getOutputPath(Class<?> clazz) {
+    protected Path getOutputPath() {
         Path outRootPath;
         try {
             if (this.outModuleName.isEmpty()) {
@@ -204,7 +232,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
      */
     public void runCli() {
         try {
-            Path outRootPath = getOutputPath(this.getClass());
+            Path outRootPath = getOutputPath();
 
             // 尝试动态加载FrameGenCLI类
             Class<?> frameGenCLIClass = Class.forName("org.framegen.core.FrameGenCLI");
@@ -216,7 +244,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             Method runCommandLineMethod = frameGenCLIClass.getDeclaredMethod("runCommandLine", FrameGenExecutor.class);
 
             // 调用runCommandLine方法
-            runCommandLineMethod.invoke(frameGenCLIInstance, getExecutor(outRootPath));
+            runCommandLineMethod.invoke(frameGenCLIInstance, getExecutor());
         } catch (ClassNotFoundException e) {
             // 如果类未找到
             String msg = "请检查是否引入了framegen-cli依赖";

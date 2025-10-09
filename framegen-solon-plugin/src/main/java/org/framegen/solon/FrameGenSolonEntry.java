@@ -2,9 +2,10 @@ package org.framegen.solon;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.framegen.config.AppFrameworkEnum;
 import org.framegen.core.AbstractEntry;
 import org.framegen.core.FrameGenExecutor;
-import org.framegen.core.service.SolonDataSourceFactory;
+import org.framegen.solon.service.SolonDataSourceFactory;
 import org.framegen.solon.util.SolonContextHolder;
 import org.noear.solon.core.AppContext;
 
@@ -16,7 +17,7 @@ public class FrameGenSolonEntry extends AbstractEntry<FrameGenSolonEntry> {
     }
 
     public FrameGenSolonEntry(AppContext context, String dataSourceName) {
-        super(new SolonDataSourceFactory(context).getDataSource(), dataSourceName);
+        super(new SolonDataSourceFactory(context).getDataSource(), dataSourceName, AppFrameworkEnum.SOLON);
     }
 
     public FrameGenSolonEntry create(AppContext context) {
@@ -35,10 +36,6 @@ public class FrameGenSolonEntry extends AbstractEntry<FrameGenSolonEntry> {
     @Override
     protected Class<? extends FrameGenExecutor> getExecutorClass() {
         return FrameGenSolonExecutor.class;
-    }
-
-    public void run() {
-        super.run(SolonContextHolder.getContext().getClass());
     }
 
     public void start() {
