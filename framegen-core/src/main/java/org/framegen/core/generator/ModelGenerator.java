@@ -52,8 +52,10 @@ public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
             }
         });
         if (GlobalConfigHolder.enableLombok && !GlobalConfigHolder.enableKotlin) {
+            imports.add("lombok.AllArgsConstructor");
             imports.add("lombok.Data");
             imports.add("lombok.Builder");
+            imports.add("lombok.NoArgsConstructor");
         }
 
         return imports;
@@ -76,6 +78,8 @@ public class ModelGenerator extends AbstractGenerator<Collection<Column>> {
         if (GlobalConfigHolder.enableLombok && !GlobalConfigHolder.enableKotlin) {
             annotations.add("Data");
             annotations.add("Builder");
+            annotations.add("AllArgsConstructor");
+            annotations.add("NoArgsConstructor");
         }
         return annotations;
     }
