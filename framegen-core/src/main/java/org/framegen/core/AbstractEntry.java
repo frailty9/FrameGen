@@ -189,28 +189,6 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
                 try {
                     // 查询列信息并存放到表对象中
                     table.setColumns(query.getTableColumns(table.getTableName()));
-                    // 计算导入类型
-                    List<String> imports = new ArrayList<>();
-                    table.getColumns().forEach(column -> {
-                        String codeType = column.getDataType();
-                        switch (codeType) {
-                            case "BigDecimal":
-                                imports.add("java.math.BigDecimal");
-                                break;
-                            case "LocalDate":
-                                imports.add("java.time.LocalDate");
-                                break;
-                            case "LocalTime":
-                                imports.add("java.time.LocalTime");
-                                break;
-                            case "LocalDateTime":
-                                imports.add("java.time.LocalDateTime");
-                                break;
-                            default:
-                                break;
-                        }
-                    });
-                    table.setTypeImports(imports);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

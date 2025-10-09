@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.framegen.util.StrUtil;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -37,5 +38,37 @@ public class Table {
         return columns.stream()
                .filter(column -> column.getColumnKey().contains("PRI"))
                 .collect(Collectors.toList()).get(0);
+    }
+
+    public void setColumns(Collection<Column> columns) {
+        if (columns == null) {
+            this.columns = new ArrayList<>();
+        } else {
+            this.columns = columns;
+        }
+        loadTypeImports();
+    }
+
+    private void loadTypeImports() {
+        typeImports = new ArrayList<>();
+        columns.forEach(column -> {
+            String codeType = column.getDataType();
+            switch (codeType) {
+                case "BigDecimal":
+                    typeImports.add("java.math.BigDecimal");
+                    break;
+                case "LocalDate":
+                    typeImports.add("java.time.LocalDate");
+                    break;
+                case "LocalTime":
+                    typeImports.add("java.time.LocalTime");
+                    break;
+                case "LocalDateTime":
+                    typeImports.add("java.time.LocalDateTime");
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 }
