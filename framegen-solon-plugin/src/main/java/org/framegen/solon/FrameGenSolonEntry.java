@@ -6,7 +6,6 @@ import org.framegen.config.AppFrameworkEnum;
 import org.framegen.core.AbstractEntry;
 import org.framegen.core.FrameGenExecutor;
 import org.framegen.solon.service.SolonDataSourceFactory;
-import org.framegen.solon.util.SolonContextHolder;
 import org.noear.solon.Solon;
 import org.noear.solon.core.AppContext;
 

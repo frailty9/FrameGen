@@ -242,8 +242,6 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
      */
     public void runCli() {
         try {
-            Path outRootPath = getOutputPath();
-
             // 尝试动态加载FrameGenCLI类
             Class<?> frameGenCLIClass = Class.forName("org.framegen.core.FrameGenCLI");
 

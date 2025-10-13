@@ -1,6 +1,5 @@
 package org.framegen.util;
 
-import lombok.Getter;
 import org.framegen.config.GlobalConfigHolder;
 
 import java.util.ArrayList;
