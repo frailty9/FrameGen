@@ -4,6 +4,7 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FrameworkConfig;
 import org.framegen.config.PackageConfig;
+import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
@@ -63,6 +64,7 @@ public class MapperXmlGenerator extends AbstractGenerator<Map<String, Object>> {
         data.put("primaryJType", primaryColumn.getDataType());
         data.put("primaryVarName", primaryColumn.getVariableName());
         data.put("isAutoIncrement", primaryColumn.getExtra().contains("auto_increment"));
+        data.put("isMybatisPlus", frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS);
 
         this.write(data, modelFilePath.toFile());
     }

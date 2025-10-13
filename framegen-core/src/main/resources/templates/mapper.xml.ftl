@@ -8,13 +8,16 @@
         primaryJType,
         primaryVarName,
         isAutoIncrement,
+        isMybatisPlus
     }
   -->
 <#assign startIdx = isAutoIncrement?then(1, 0)>
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${mapperClassPath}">
+<#if isMybatisPlus>
 
+<#else>
     <insert id="insert" parameterType="${modelClassPath}">
         INSERT INTO ${tableName} 
             (${fields[startIdx..]?join(", ")}) 
@@ -49,5 +52,5 @@
         DELETE FROM ${tableName}
         WHERE ${fields[0]} = #${primaryVarName}
     </delete>
-
+</#if>
 </mapper>
