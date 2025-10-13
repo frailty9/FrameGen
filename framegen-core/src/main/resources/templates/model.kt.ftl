@@ -19,7 +19,8 @@ data class ${className}(
     * ${column.fieldName}
     </#if>
     */
-    <#if column.nullable>
+    <#if column.nullable ||
+    (column.columnKey?has_content && column.columnKey.contains("PRI"))>
     var ${column.variableName}: ${column.dataType}? = null<#sep>,</#sep>
     <#else>
     var ${column.variableName}: ${column.dataType}<#sep>,</#sep>
