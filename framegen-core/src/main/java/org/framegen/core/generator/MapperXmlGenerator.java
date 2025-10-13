@@ -41,17 +41,21 @@ public class MapperXmlGenerator extends AbstractGenerator<Map<String, Object>> {
     }
 
     @Override
+    protected Path getOutputFile() {
+        return codePath.resolve(getPackagePath().replace(".", File.separator))
+                .resolve(getClassName() + ".xml");
+    }
+
+    @Override
     public void generate() throws TemplateException, IOException {
-
-        Path modelDirPath = codePath.resolve(
-                getPackagePath().replace(".", File.separator));
-
-        // 创建输出目录
-        if (!modelDirPath.toFile().exists())
-            modelDirPath.toFile().mkdirs();
         // 输出的文件路径
-        Path modelFilePath = modelDirPath.resolve(getClassName() + ".xml");
+        Path filePath = getOutputFile();
+        // 开始前核验
+        if (verifyFailed(filePath)) {
+            return;
+        }
 
+        // 整理数据
         Column primaryColumn = table.getPrimaryColumn();
 
         Map<String, Object> data = new HashMap<>();
@@ -66,6 +70,6 @@ public class MapperXmlGenerator extends AbstractGenerator<Map<String, Object>> {
         data.put("isAutoIncrement", primaryColumn.getExtra().contains("auto_increment"));
         data.put("isMybatisPlus", frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS);
 
-        this.write(data, modelFilePath.toFile());
+        this.write(data, filePath.toFile());
     }
 }

@@ -8,5 +8,7 @@ public final class GlobalConfigHolder {
 
     public static boolean enableMultiThread = false;
 
+    public static FileWriteMode fileWriteMode = FileWriteMode.SKIP_IF_EXISTS;
+
     private GlobalConfigHolder() {}
 }
