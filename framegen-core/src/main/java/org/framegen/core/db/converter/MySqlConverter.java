@@ -25,6 +25,7 @@ public class MySqlConverter implements AbstractTypeConverter {
                     return "String";
                 case "int":
                 case "integer":
+                case "tinyint":
                     return "Int";
                 case "bigint":
                     return "Long";
@@ -37,7 +38,6 @@ public class MySqlConverter implements AbstractTypeConverter {
                 case "timestamp":
                     return "LocalDateTime";
                 case "boolean":
-                case "tinyint":
                     return "Boolean";
                 case "float":
                     return "Float";
@@ -56,6 +56,7 @@ public class MySqlConverter implements AbstractTypeConverter {
                     return "String";
                 case "int":
                 case "integer":
+                case "tinyint":
                     return "Integer";
                 case "bigint":
                     return "Long";
@@ -68,7 +69,6 @@ public class MySqlConverter implements AbstractTypeConverter {
                 case "timestamp":
                     return "LocalDateTime";
                 case "boolean":
-                case "tinyint":
                     return "Boolean";
                 case "float":
                     return "Float";
