@@ -11,16 +11,18 @@ import ${import}
 @${annotation}
 </#list>
 data class ${className}(
-    <#list data as column>
+    <#list data.columns as column>
     /**
     <#if column.columnComment?has_content>
-    * ${column.columnComment}
+     * ${column.columnComment}
     <#else>
-    * ${column.fieldName}
+     * ${column.fieldName}
     </#if>
-    */
-    <#if column.nullable ||
-    (column.columnKey?has_content && column.columnKey.contains("PRI"))>
+     */
+    <#if data.repositoryFramework == "MYBATIS_PLUS">
+    @${data.columnAnnotations[column_index]}
+    </#if>
+    <#if column.nullable || column.columnKey?contains("PRI")>
     var ${column.variableName}: ${column.dataType}? = null<#sep>,</#sep>
     <#else>
     var ${column.variableName}: ${column.dataType}<#sep>,</#sep>

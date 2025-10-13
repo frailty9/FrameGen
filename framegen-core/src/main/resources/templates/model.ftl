@@ -11,7 +11,7 @@ import ${import};
 @${annotation}
 </#list>
 public class ${className} {
-    <#list data as column>
+    <#list data.columns as column>
     /**
     <#if column.columnComment?has_content>
     * ${column.columnComment}
@@ -19,6 +19,9 @@ public class ${className} {
     * ${column.fieldName}
     </#if>
     */
+    <#if data.repositoryFramework == "MYBATIS_PLUS">
+    @${data.columnAnnotations[column_index]}
+    </#if>
     private ${column.dataType} ${column.variableName};
     </#list>
 
@@ -26,12 +29,12 @@ public class ${className} {
     public ${className}() {
     }
 
-    public ${className}(<#list data as column>${column.dataType} ${column.variableName}<#sep>, </#list>) {
+    public ${className}(<#list data.columns as column>${column.dataType} ${column.variableName}<#sep>, </#list>) {
         <#list data as column>
         this.${column.variableName} = ${column.variableName};
         </#list>
     }    
-    <#list data as column>
+    <#list data.columns as column>
     
     public ${column.dataType} get${column.variableName?cap_first}() {
         return ${column.variableName};

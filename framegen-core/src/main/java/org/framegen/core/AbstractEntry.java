@@ -2,6 +2,7 @@ package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FileWriteMode;
+import org.framegen.config.IdType;
 import org.framegen.core.service.DataSourceHolder;
 import org.framegen.config.AppFrameworkEnum;
 import org.framegen.config.FrameworkConfig;
@@ -146,6 +147,11 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     public T removeHeader() {
         StrUtil.setTableNamePrefix("");
+        return self();
+    }
+
+    public T idType(IdType idType) {
+        GlobalConfigHolder.idType = idType;
         return self();
     }
 
