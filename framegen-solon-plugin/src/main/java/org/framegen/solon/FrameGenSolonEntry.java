@@ -7,6 +7,7 @@ import org.framegen.core.AbstractEntry;
 import org.framegen.core.FrameGenExecutor;
 import org.framegen.solon.service.SolonDataSourceFactory;
 import org.framegen.solon.util.SolonContextHolder;
+import org.noear.solon.Solon;
 import org.noear.solon.core.AppContext;
 
 @Slf4j
@@ -38,7 +39,13 @@ public class FrameGenSolonEntry extends AbstractEntry<FrameGenSolonEntry> {
         return FrameGenSolonExecutor.class;
     }
 
+    @Override
+    public void run() {
+        super.run();
+        Solon.stop();
+    }
+
     public void start() {
-        run();
+        this.run();
     }
 }

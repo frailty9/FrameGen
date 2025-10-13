@@ -7,6 +7,7 @@ import org.framegen.core.AbstractEntry;
 import org.framegen.core.FrameGenExecutor;
 import org.framegen.spring.service.SpringDataSourceFactory;
 import org.framegen.spring.util.SpringContextHolder;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 
 @Slf4j
@@ -36,5 +37,11 @@ public class FrameGenSpringBootEntry extends AbstractEntry<FrameGenSpringBootEnt
     @Override
     protected Class<? extends FrameGenExecutor> getExecutorClass() {
         return FrameGenSpringExecutor.class;
+    }
+
+    @Override
+    public void run() {
+        super.run();
+        SpringApplication.exit(SpringContextHolder.getContext());
     }
 }
