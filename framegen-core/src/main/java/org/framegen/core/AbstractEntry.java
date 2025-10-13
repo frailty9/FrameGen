@@ -204,7 +204,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             }).collect(Collectors.toList());
 
             // 判断是否启用移除前缀, 但值为空(表示自动)
-            if ("".equals(StrUtil.getTableNamePrefix())) {
+            if ("".equals(GlobalConfigHolder.tableNamePrefix)) {
                 String prefix = StrUtil.getCommonPrefix(
                         tables.stream().map(Table::getTableName).collect(Collectors.toList()));
                 StrUtil.setTableNamePrefix(prefix);

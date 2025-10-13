@@ -1,6 +1,7 @@
 package org.framegen.util;
 
 import lombok.Getter;
+import org.framegen.config.GlobalConfigHolder;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -10,14 +11,11 @@ import java.util.List;
 
 public class StrUtil {
 
-    @Getter
-    private static String tableNamePrefix = null;
-
     public static void setTableNamePrefix(String tableNamePrefix) {
-        if (StrUtil.tableNamePrefix == null) {
+        if (GlobalConfigHolder.tableNamePrefix == null) {
             tableNamePrefix = "";
         } else {
-            tableNamePrefix = StrUtil.tableNamePrefix;
+            tableNamePrefix = GlobalConfigHolder.tableNamePrefix;
         }
     }
 
@@ -191,9 +189,9 @@ public class StrUtil {
     }
 
     public static String removePrefix(String str) {
-        if (str == null || tableNamePrefix == null) return str;
-        if (tableNamePrefix.isEmpty()) return str;
-        String stableNamePrefix = toPascalCase(tableNamePrefix);
+        if (str == null || GlobalConfigHolder.tableNamePrefix == null) return str;
+        if (GlobalConfigHolder.tableNamePrefix.isEmpty()) return str;
+        String stableNamePrefix = toPascalCase(GlobalConfigHolder.tableNamePrefix);
         if (!str.startsWith(stableNamePrefix)) return str;
         return str.substring(stableNamePrefix.length());
     }
