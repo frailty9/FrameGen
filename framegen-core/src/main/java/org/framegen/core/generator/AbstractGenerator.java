@@ -119,12 +119,13 @@ public abstract class AbstractGenerator<E> {
             log.info("FrameGen: 跳过已存在的文件:{}", filePath);
             return true;
         }
-
-        // 创建输出目录, 避免文件夹不存在导致文件写入失败
-        boolean success = filePath.getParent().toFile().mkdirs();
-        if (!success) {
-            log.error("FrameGen: 创建输出目录失败:{}", filePath.getParent());
-            return true;
+        // 判断目录是否存在, 创建输出目录, 避免文件夹不存在导致文件写入失败
+        if (!filePath.getParent().toFile().exists()) {
+            boolean success = filePath.getParent().toFile().mkdirs();
+            if (!success) {
+                log.error("FrameGen: 创建输出目录失败:{}", filePath.getParent());
+                return true;
+            }
         }
         return false;
     }
