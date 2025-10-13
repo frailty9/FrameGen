@@ -42,6 +42,5 @@ public class FrameGenSpringBootEntry extends AbstractEntry<FrameGenSpringBootEnt
     @Override
     public void run() {
         super.run();
-        SpringApplication.exit(SpringContextHolder.getContext());
     }
 }

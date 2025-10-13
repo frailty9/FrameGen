@@ -221,6 +221,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             log.error("FrameGen: 生成失败", e);
             throw new RuntimeException(e);
         }
+        System.exit(0);
     }
 
     protected Path getOutputPath() {

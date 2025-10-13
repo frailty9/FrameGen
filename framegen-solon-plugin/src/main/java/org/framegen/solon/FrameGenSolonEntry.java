@@ -38,13 +38,7 @@ public class FrameGenSolonEntry extends AbstractEntry<FrameGenSolonEntry> {
         return FrameGenSolonExecutor.class;
     }
 
-    @Override
-    public void run() {
-        super.run();
-        Solon.stop();
-    }
-
     public void start() {
-        this.run();
+        run();
     }
 }
