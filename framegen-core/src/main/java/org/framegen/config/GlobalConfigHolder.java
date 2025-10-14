@@ -12,7 +12,7 @@ public final class GlobalConfigHolder {
 
     public static FileWriteMode fileWriteMode = FileWriteMode.SKIP_IF_EXISTS;
 
-    public static IdType idType = IdType.AUTO;
+    public static IdType idType = IdType.NONE;
 
     private GlobalConfigHolder() {}
 }
