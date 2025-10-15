@@ -12,21 +12,23 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 public class ModelGenerator extends AbstractGenerator<Map<String, Object>> {
 
-    private static final String[] optimisticLockingNames = new String[] {"version"};
-    private static final String[] createTimeNames = new String[] {"create_time", "created_at"};
-    private static final String[] updateTimeNames = new String[] {"update_time", "updated_at"};
-    private static final String[] logicDeletedNames = new String[] {"is_deleted", "deleted"};
+//    private static final String[] optimisticLockingNames = new String[] {"version"};
+//    private static final String[] createTimeNames = new String[] {"create_time", "created_at"};
+//    private static final String[] updateTimeNames = new String[] {"update_time", "updated_at"};
+//    private static final String[] logicDeletedNames = new String[] {"is_deleted", "deleted"};
+    private static final List<String> optimisticLockingNames = Arrays.asList("version");
+    private static final List<String> createTimeNames = Arrays.asList("create_time", "created_at");
+    private static final List<String> updateTimeNames = Arrays.asList("update_time", "updated_at");
+    private static final List<String> logicDeletedNames = Arrays.asList("is_deleted", "deleted");
 
-    private static final Map<String, String[]> columnAnnotationMap = new HashMap<>();
+    private static final Map<String, List<String>> columnAnnotationMap = new HashMap<>();
 
     static {
         columnAnnotationMap.put("Version", optimisticLockingNames);
@@ -40,8 +42,7 @@ public class ModelGenerator extends AbstractGenerator<Map<String, Object>> {
     }
 
     @Override
-    protected List<String> getImports() {
-        List<String> imports = new ArrayList<>();
+    protected void setImports() {
         if (null != table.getTypeImports()) {
             imports.addAll(table.getTypeImports());
         }
@@ -62,8 +63,6 @@ public class ModelGenerator extends AbstractGenerator<Map<String, Object>> {
             imports.add("com.baomidou.mybatisplus.annotation.FieldFill");
             imports.add("com.baomidou.mybatisplus.annotation.IdType");
         }
-
-        return imports;
     }
 
     @Override

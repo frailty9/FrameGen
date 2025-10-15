@@ -21,15 +21,11 @@ public class ServiceGenerator extends AbstractGenerator<Properties> {
     }
 
     @Override
-    protected List<String> getImports() {
-        List<String> imports = new ArrayList<>();
-
+    protected void setImports() {
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.extension.service.IService");
             imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
         }
-
-        return imports;
     }
 
     @Override

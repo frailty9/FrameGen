@@ -8,6 +8,7 @@ import org.framegen.util.StrUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Data
@@ -50,7 +51,7 @@ public class Table {
     }
 
     private void loadTypeImports() {
-        typeImports = new ArrayList<>();
+        typeImports = new HashSet<>();
         columns.forEach(column -> {
             String codeType = column.getDataType();
             String importType = null;
@@ -70,9 +71,7 @@ public class Table {
                 default:
                     break;
             }
-            String finalImportType = importType;
-            if (null != importType && typeImports.stream().noneMatch(
-                    type -> type.equals(finalImportType))) {
+            if (importType != null) {
                 typeImports.add(importType);
             }
         });

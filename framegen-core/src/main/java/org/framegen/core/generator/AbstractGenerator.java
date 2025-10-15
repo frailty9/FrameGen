@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;
 
@@ -36,6 +38,9 @@ public abstract class AbstractGenerator<E> {
     protected final Table table;
     // 类名后缀
     protected final String classNameSuffix;
+    // import语句
+    protected final Collection<String> imports = new HashSet<String>() {
+    };
 
     public AbstractGenerator(String baseTemplateName, String classNameSuffix, FrameworkConfig frameworkConfig,
                              Path codePath, Table table, PackageConfig packageConfig)
@@ -76,7 +81,7 @@ public abstract class AbstractGenerator<E> {
     }
 
     // 生成代码的导入部分
-    protected abstract List<String> getImports();
+    protected abstract void setImports();
 
     // 生成代码的注释部分, 默认使用类名作为注释
     protected String getClassComment() {
@@ -138,11 +143,11 @@ public abstract class AbstractGenerator<E> {
         if (verifyFailed(filePath)) {
             return;
         }
-
+        setImports();
         // 整理数据
         GeneratorProps.Builder<E> dataBuilder = GeneratorProps.builder();
         dataBuilder.packagePath(getPackagePath())
-                .imports(getImports())
+                .imports(imports)
                 .annotations(getAnnotations())
                 .classComment(getClassName())
                 .className(getClassName())

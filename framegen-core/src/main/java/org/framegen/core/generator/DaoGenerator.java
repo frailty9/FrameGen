@@ -22,8 +22,7 @@ public class DaoGenerator extends AbstractGenerator<Map<String, Object>> {
     }
 
     @Override
-    protected List<String> getImports() {
-        List<String> imports = new ArrayList<>();
+    protected void setImports() {
         imports.add("javax.sql.DataSource");
         if (null != table.getTypeImports()) {
             imports.addAll(table.getTypeImports());
@@ -38,7 +37,6 @@ public class DaoGenerator extends AbstractGenerator<Map<String, Object>> {
             imports.add("java.util.List");
         }
         imports.add(getFullPackage(PackageConfig::getModel) + "." + table.getPascalCaseName());
-        return imports;
     }
 
     @Override

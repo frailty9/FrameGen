@@ -21,9 +21,7 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
     }
 
     @Override
-    protected List<String> getImports() {
-        List<String> imports = new ArrayList<>();
-
+    protected void setImports() {
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS
                 || frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("org.apache.ibatis.annotations.Mapper");
@@ -38,8 +36,6 @@ public class MapperGenerator extends AbstractGenerator<Properties> {
         if (frameworkConfig.isEnableSpring()) {
             imports.add("org.springframework.stereotype.Repository");
         }
-
-        return imports;
     }
 
     @Override

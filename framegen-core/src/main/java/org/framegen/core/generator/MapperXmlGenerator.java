@@ -26,8 +26,7 @@ public class MapperXmlGenerator extends AbstractGenerator<Map<String, Object>> {
     }
 
     @Override
-    protected List<String> getImports() {
-        return Collections.emptyList();
+    protected void setImports() {
     }
 
     @Override

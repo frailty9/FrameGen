@@ -22,9 +22,7 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
     }
 
     @Override
-    protected List<String> getImports() {
-        List<String> imports = new ArrayList<>();
-
+    protected void setImports() {
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             imports.add("com.baomidou.mybatisplus.extension.service.impl.ServiceImpl");
             imports.add(getFullPackage(PackageConfig::getDao) + "." + table.getPascalCaseName()
@@ -39,8 +37,6 @@ public class ServiceImplGenerator extends AbstractGenerator<Properties> {
         if (frameworkConfig.isEnableSpring()) {
             imports.add("org.springframework.stereotype.Service");
         }
-
-        return imports;
     }
 
     @Override
