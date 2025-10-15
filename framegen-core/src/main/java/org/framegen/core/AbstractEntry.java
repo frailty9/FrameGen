@@ -2,7 +2,8 @@ package org.framegen.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.framegen.config.FileWriteMode;
-import org.framegen.config.IdType;
+import org.framegen.config.RepositoryFrameworkEnum;
+import org.framegen.config.mybatisPlus.MybatisPlusConfig;
 import org.framegen.core.service.DataSourceHolder;
 import org.framegen.config.AppFrameworkEnum;
 import org.framegen.config.FrameworkConfig;
@@ -45,6 +46,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     protected PackageConfig.Builder packageConfigBuilder = PackageConfig.builder();
     protected NamingSuffixConfig.Builder namingSuffixConfigBuilder = NamingSuffixConfig.builder();
     protected FrameworkConfig frameworkConfig = new FrameworkConfig();
+    protected MybatisPlusConfig.Builder mybatisPlusConfigBuilder = MybatisPlusConfig.builder();
 
     // 传入连接配置的构造方法
     public AbstractEntry(JdbcConfig jdbcConfig) {
@@ -203,8 +205,8 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
         return self();
     }
 
-    public T idType(IdType idType) {
-        GlobalConfigHolder.idType = idType;
+    public T mybatisPlusConfig(Consumer<MybatisPlusConfig.Builder> consumer) {
+        consumer.accept(mybatisPlusConfigBuilder);
         return self();
     }
 
@@ -238,6 +240,9 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     }
 
     public void run() {
+        if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
+            GlobalConfigHolder.mybatisPlusConfig = mybatisPlusConfigBuilder.build();
+        }
         // 获取执行器
         FrameGenExecutor executor = getExecutor();
 

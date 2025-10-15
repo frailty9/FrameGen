@@ -88,28 +88,53 @@ public class ModelGenerator extends AbstractGenerator<Map<String, Object>> {
         if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
             for (Column column : table.getColumns()) {
                 String fieldName = column.getFieldName();
+                // 匹配ID
                 if (column.getColumnKey().contains("PRI")) {
                     imports.add("com.baomidou.mybatisplus.annotation.TableId");
                     imports.add("com.baomidou.mybatisplus.annotation.IdType");
                     columnAnnotations.add("TableId(\"" + fieldName +
-                            "\", type = IdType." + GlobalConfigHolder.idType.name() + ")");
+                            "\", type = IdType." + GlobalConfigHolder.mybatisPlusConfig.getIdType().name() + ")");
                     continue;
                 }
-                if (optimisticLockingNames.contains(fieldName)) {
+                // 匹配creat与update时间字段
+                boolean flag_create = createTimeNames.contains(fieldName);
+                boolean flag_update = updateTimeNames.contains(fieldName);
+                if (flag_create || flag_update) {
+                    imports.add("com.baomidou.mybatisplus.annotation.TableField");
+
+                    StringBuilder annotationBuilder = new StringBuilder();
+                    annotationBuilder.append("TableField(\"").append(fieldName).append("\"");
+
+                    switch (GlobalConfigHolder.mybatisPlusConfig.getTimeManager()) {
+                        case MYBATIS_PLUS:
+                            imports.add("com.baomidou.mybatisplus.annotation.FieldFill");
+                            annotationBuilder.append(", fill = FieldFill.")
+                                    .append(flag_create ? "INSERT" : "INSERT_UPDATE");
+                            break;
+                        case SQL:
+                            imports.add("com.baomidou.mybatisplus.annotation.FieldStrategy");
+                            annotationBuilder.append(", insertStrategy = FieldStrategy.NEVER");
+                            break;
+                        case CUSTOM:
+                            imports.add("com.baomidou.mybatisplus.annotation.FieldStrategy");
+                            annotationBuilder.append(", insertStrategy = FieldStrategy.NOT_NULL");
+                            break;
+                    }
+                    String annotation = annotationBuilder.append(")").toString();
+                    columnAnnotations.add(annotation);
+                }
+                // 匹配乐观锁
+                else if (optimisticLockingNames.contains(fieldName)) {
                     imports.add("com.baomidou.mybatisplus.annotation.Version");
                     columnAnnotations.add("Version");
-                } else if (createTimeNames.contains(fieldName)) {
-                    imports.add("com.baomidou.mybatisplus.annotation.TableField");
-                    imports.add("com.baomidou.mybatisplus.annotation.FieldFill");
-                    columnAnnotations.add("TableField(" + fieldName + ", fill = FieldFill.INSERT)");
-                } else if (updateTimeNames.contains(fieldName)) {
-                    imports.add("com.baomidou.mybatisplus.annotation.TableField");
-                    imports.add("com.baomidou.mybatisplus.annotation.FieldFill");
-                    columnAnnotations.add("TableField(" + fieldName + ", fill = FieldFill.INSERT_UPDATE)");
-                } else if (logicDeletedNames.contains(fieldName)) {
+                }
+                // 匹配逻辑删除
+                else if (logicDeletedNames.contains(fieldName)) {
                     imports.add("com.baomidou.mybatisplus.annotation.TableLogic");
                     columnAnnotations.add("TableLogic");
-                } else{
+                }
+                // 默认
+                else {
                     imports.add("com.baomidou.mybatisplus.annotation.TableField");
                     columnAnnotations.add("TableField(\"" + fieldName + "\")");
                 }

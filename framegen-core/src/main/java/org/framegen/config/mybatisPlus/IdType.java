@@ -1,5 +1,8 @@
-package org.framegen.config;
+package org.framegen.config.mybatisPlus;
 
+import lombok.Getter;
+
+@Getter
 public enum IdType {
     AUTO(0),
     NONE(1),
@@ -13,7 +16,4 @@ public enum IdType {
         this.key = key;
     }
 
-    public int getKey() {
-        return this.key;
-    }
 }

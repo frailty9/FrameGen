@@ -1,5 +1,7 @@
 package org.framegen.config;
 
+import org.framegen.config.mybatisPlus.MybatisPlusConfig;
+
 public final class GlobalConfigHolder {
 
     public static boolean enableKotlin = false;
@@ -12,7 +14,7 @@ public final class GlobalConfigHolder {
 
     public static FileWriteMode fileWriteMode = FileWriteMode.SKIP_IF_EXISTS;
 
-    public static IdType idType = IdType.NONE;
+    public static MybatisPlusConfig mybatisPlusConfig = null;
 
     private GlobalConfigHolder() {}
 }
