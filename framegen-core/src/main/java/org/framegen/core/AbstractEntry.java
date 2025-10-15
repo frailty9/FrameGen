@@ -106,6 +106,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     /**
      * 设置全局字段排除规则
+     *
      * @param fieldNames 要排除的字段名集合
      * @return 链式调用
      */
@@ -116,6 +117,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     /**
      * 设置全局字段排除规则
+     *
      * @param fieldNames 要排除的字段名
      * @return 链式调用
      */
@@ -127,7 +129,8 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     /**
      * 设置表级字段排除规则
-     * @param tableName 表名
+     *
+     * @param tableName  表名
      * @param fieldNames 要排除的字段名集合
      * @return 链式调用
      */
@@ -138,7 +141,8 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     /**
      * 设置表级字段排除规则
-     * @param tableName 表名
+     *
+     * @param tableName  表名
      * @param fieldNames 要排除的字段名
      * @return 链式调用
      */
@@ -206,6 +210,7 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     /**
      * 启用覆盖模式
+     *
      * @return 链式调用
      */
     public T overwrite() {
@@ -246,21 +251,25 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             // 过滤表
             Stream<Table> stream = tables.stream();
             if (!this.includes.isEmpty()) {
-                stream = stream.filter(table -> this.includes.contains(table.getTableName())
-                        && !this.excludes.contains(table.getTableName()));
+                stream = stream.filter(table ->
+                        this.includes.contains(table.getTableName()));
+            }
+            if (!this.excludes.isEmpty()) {
+                stream = stream.filter(table ->
+                        !this.excludes.contains(table.getTableName()));
             }
             tables = stream.peek(table -> {
                 try {
                     // 查询列信息并存放到表对象中
                     List<Column> columns = query.getTableColumns(table.getTableName());
-                    
+
                     // 应用字段排除规则
                     if (!globalFieldExcludes.isEmpty() || tableFieldExcludes.containsKey(table.getTableName())) {
                         Collection<String> excludes = new ArrayList<>(globalFieldExcludes);
                         excludes.addAll(tableFieldExcludes.getOrDefault(table.getTableName(), Collections.emptyList()));
                         columns.removeIf(column -> excludes.contains(column.getFieldName()));
                     }
-                    
+
                     table.setColumns(columns);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
