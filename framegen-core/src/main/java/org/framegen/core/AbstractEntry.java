@@ -13,6 +13,7 @@ import org.framegen.config.PackageConfig;
 import org.framegen.core.db.Query;
 import org.framegen.core.db.impl.HikariDataSourceGetter;
 import org.framegen.core.file.FileUtil;
+import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
 import org.framegen.util.StrUtil;
 
@@ -26,6 +27,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -37,6 +39,8 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
 
     protected Collection<String> includes = new ArrayList<>();
     protected Collection<String> excludes = new ArrayList<>();
+    protected Collection<String> globalFieldExcludes = new ArrayList<>();
+    protected Map<String, Collection<String>> tableFieldExcludes = new HashMap<>();
     protected String outModuleName = "";
     protected PackageConfig.Builder packageConfigBuilder = PackageConfig.builder();
     protected NamingSuffixConfig.Builder namingSuffixConfigBuilder = NamingSuffixConfig.builder();
@@ -97,6 +101,51 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
     public T excludes(String... tableNames) {
         this.excludes = new ArrayList<>();
         Collections.addAll(this.excludes, tableNames);
+        return self();
+    }
+
+    /**
+     * 设置全局字段排除规则
+     * @param fieldNames 要排除的字段名集合
+     * @return 链式调用
+     */
+    public T excludeFields(Collection<String> fieldNames) {
+        this.globalFieldExcludes = fieldNames;
+        return self();
+    }
+
+    /**
+     * 设置全局字段排除规则
+     * @param fieldNames 要排除的字段名
+     * @return 链式调用
+     */
+    public T excludeFields(String... fieldNames) {
+        this.globalFieldExcludes = new ArrayList<>();
+        Collections.addAll(this.globalFieldExcludes, fieldNames);
+        return self();
+    }
+
+    /**
+     * 设置表级字段排除规则
+     * @param tableName 表名
+     * @param fieldNames 要排除的字段名集合
+     * @return 链式调用
+     */
+    public T excludeTableFields(String tableName, Collection<String> fieldNames) {
+        this.tableFieldExcludes.put(tableName, fieldNames);
+        return self();
+    }
+
+    /**
+     * 设置表级字段排除规则
+     * @param tableName 表名
+     * @param fieldNames 要排除的字段名
+     * @return 链式调用
+     */
+    public T excludeTableFields(String tableName, String... fieldNames) {
+        Collection<String> fields = new ArrayList<>();
+        Collections.addAll(fields, fieldNames);
+        this.tableFieldExcludes.put(tableName, fields);
         return self();
     }
 
@@ -203,7 +252,16 @@ public abstract class AbstractEntry<T extends AbstractEntry<T>> {
             tables = stream.peek(table -> {
                 try {
                     // 查询列信息并存放到表对象中
-                    table.setColumns(query.getTableColumns(table.getTableName()));
+                    List<Column> columns = query.getTableColumns(table.getTableName());
+                    
+                    // 应用字段排除规则
+                    if (!globalFieldExcludes.isEmpty() || tableFieldExcludes.containsKey(table.getTableName())) {
+                        Collection<String> excludes = new ArrayList<>(globalFieldExcludes);
+                        excludes.addAll(tableFieldExcludes.getOrDefault(table.getTableName(), Collections.emptyList()));
+                        columns.removeIf(column -> excludes.contains(column.getFieldName()));
+                    }
+                    
+                    table.setColumns(columns);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
