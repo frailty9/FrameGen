@@ -149,7 +149,7 @@ public abstract class AbstractGenerator<E> {
         dataBuilder.packagePath(getPackagePath())
                 .imports(imports)
                 .annotations(getAnnotations())
-                .classComment(getClassName())
+                .classComment(getClassComment())
                 .className(getClassName())
                 .data(getMoreData());
 
