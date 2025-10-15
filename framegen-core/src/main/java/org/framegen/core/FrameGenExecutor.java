@@ -54,7 +54,7 @@ public class FrameGenExecutor {
                 generateModel(table);
 
                 // 生成数据层
-                if (null != packageConfig.getDao()) {
+                if (null != packageConfig.getDao() && !packageConfig.getDao().isEmpty()) {
 
                     switch (frameworkConfig.repositoryFramework) {
                         case NATIVE_JDBC:
@@ -69,10 +69,10 @@ public class FrameGenExecutor {
                     }
                 }
                 // 生成服务层
-                if (null != packageConfig.getService()) {
+                if (null != packageConfig.getService() && !packageConfig.getService().isEmpty()) {
                     generateService(table);
                     // 生成服务实现类
-                    if (null != packageConfig.getServiceImpl()) {
+                    if (null != packageConfig.getServiceImpl() && !packageConfig.getServiceImpl().isEmpty()) {
                         generateServiceImpl(table);
                     }
                 }
