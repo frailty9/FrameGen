@@ -6,7 +6,9 @@ import org.framegen.config.FrameworkConfig;
 import org.framegen.config.GlobalConfigHolder;
 import org.framegen.config.NamingSuffixConfig;
 import org.framegen.config.PackageConfig;
+import org.framegen.config.RepositoryFrameworkEnum;
 import org.framegen.core.generator.DaoGenerator;
+import org.framegen.core.model.Column;
 import org.framegen.core.model.Table;
 import org.framegen.core.generator.ModelGenerator;
 import org.framegen.core.generator.MapperGenerator;
@@ -46,6 +48,15 @@ public class FrameGenExecutor {
 
             log.info("FrameGen: 输出路径: {}", outRootPath);
             log.debug("FrameGen: 代码路径: {}", codePath);
+
+            if (frameworkConfig.repositoryFramework == RepositoryFrameworkEnum.MYBATIS_PLUS) {
+                // 启用Mybatis时为了适配kotlin, 将所有字段设置可空
+                for (Table table : tables) {
+                    for(Column column: table.getColumns()) {
+                        column.setNullable(true);
+                    }
+                }
+            }
 
             for (Table table : tables) {
                 log.info("FrameGen: 正在生成表: {}", table.getTableName());

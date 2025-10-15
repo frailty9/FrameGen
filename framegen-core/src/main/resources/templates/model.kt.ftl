@@ -22,7 +22,7 @@ data class ${className}(
     <#if data.repositoryFramework == "MYBATIS_PLUS">
     @${data.columnAnnotations[column_index]}
     </#if>
-    <#if column.nullable || column.columnKey?contains("PRI")>
+    <#if column.nullable>
     var ${column.variableName}: ${column.dataType}? = null<#sep>,</#sep>
     <#else>
     var ${column.variableName}: ${column.dataType}<#sep>,</#sep>
